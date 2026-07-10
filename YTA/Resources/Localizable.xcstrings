@@ -1,0 +1,246 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Home" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الرئيسية" } }
+      }
+    },
+    "Yammouneh" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "اليمونة" } }
+      }
+    },
+    "Media" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الإعلام" } }
+      }
+    },
+    "Press" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الصحافة" } }
+      }
+    },
+    "Connect" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "تواصل" } }
+      }
+    },
+    "Mission" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "مهمتنا" } }
+      }
+    },
+    "Our Impact" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "أثرنا" } }
+      }
+    },
+    "Board Members" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "أعضاء الهيئة الإدارية" } }
+      }
+    },
+    "Leadership & Governance" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "القيادة والحوكمة" } }
+      }
+    },
+    "Nature, History, and Living Heritage" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الطبيعة والتاريخ والتراث الحي" } }
+      }
+    },
+    "News Articles" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "مقالات إخبارية" } }
+      }
+    },
+    "Visit Yammouneh · Partner with YTA" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "زوروا اليمونة · شاركوا مع الجمعية" } }
+      }
+    },
+    "Roots in community, reach across Lebanon" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "جذور في المجتمع وامتداد في كل لبنان" } }
+      }
+    },
+    "Explore" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "استكشف" } }
+      }
+    },
+    "Upcoming Event" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الحدث القادم" } }
+      }
+    },
+    "Discover" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "اكتشف" } }
+      }
+    },
+    "Follow our journey" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "تابعوا رحلتنا" } }
+      }
+    },
+    "Read article" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "اقرأ المقال" } }
+      }
+    },
+    "Call us" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "اتصلوا بنا" } }
+      }
+    },
+    "Email" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "البريد الإلكتروني" } }
+      }
+    },
+    "Directions" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الاتجاهات" } }
+      }
+    },
+    "Follow YTA" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "تابعوا الجمعية" } }
+      }
+    },
+    "Plan Your Visit" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "خططوا لزيارتكم" } }
+      }
+    },
+    "Ask us about routes, guided tours, festival dates, and local recommendations." : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "اسألونا عن الطرقات والجولات المرشدة ومواعيد المهرجانات والتوصيات المحلية." } }
+      }
+    },
+    "Request a Trip Guide" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "اطلبوا دليل الرحلة" } }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "إغلاق" } }
+      }
+    },
+    "Dismiss" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "إغلاق" } }
+      }
+    },
+    "Video Unavailable" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الفيديو غير متوفر" } }
+      }
+    },
+    "This video could not be loaded from the app bundle." : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "تعذّر تحميل هذا الفيديو من حزمة التطبيق." } }
+      }
+    },
+    "Community" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "المجتمع" } }
+      }
+    },
+    "Alerts" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "التنبيهات" } }
+      }
+    },
+    "Polls" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "استطلاعات الرأي" } }
+      }
+    },
+    "Instagram" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "إنستغرام" } }
+      }
+    },
+    "Section" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "القسم" } }
+      }
+    },
+    "Channel" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "القناة" } }
+      }
+    },
+    "Alerts & project votes from YTA" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "تنبيهات وتصويت على مشاريع الجمعية" } }
+      }
+    },
+    "Checking for updates…" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "جارٍ التحقق من التحديثات…" } }
+      }
+    },
+    "Offline — showing saved content" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "غير متصل — يتم عرض المحتوى المحفوظ" } }
+      }
+    },
+    "No alerts yet" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "لا توجد تنبيهات بعد" } }
+      }
+    },
+    "Announcements from the association will appear here." : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "ستظهر إعلانات الجمعية هنا." } }
+      }
+    },
+    "No polls yet" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "لا توجد استطلاعات بعد" } }
+      }
+    },
+    "When YTA opens a project vote, it will appear here." : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "عندما تفتح الجمعية تصويتًا على مشروع، سيظهر هنا." } }
+      }
+    },
+    "Learn more" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "اعرف المزيد" } }
+      }
+    },
+    "Open" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "مفتوح" } }
+      }
+    },
+    "Closed" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "مغلق" } }
+      }
+    },
+    "%lld votes" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "%lld صوتًا" } }
+      }
+    },
+    "Overview" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "نظرة عامة" } }
+      }
+    },
+    "One vote per device · results shared at community meetings" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "صوت واحد لكل جهاز · تُعلن النتائج في اللقاءات المجتمعية" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

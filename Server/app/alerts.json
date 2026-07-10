@@ -1,0 +1,26 @@
+[
+  {
+    "id": "2026-summer-festival",
+    "title": "Summer Festival 2026 — save the date",
+    "message": "The Yammouneh Summer Festival returns this August with headline singers, dabke nights, and the kids' village. Program announcement coming soon.",
+    "severity": "event",
+    "date": "2026-06-28T10:00:00Z",
+    "linkURL": "https://www.instagram.com/yta_leb"
+  },
+  {
+    "id": "2026-reforestation-volunteers",
+    "title": "Volunteers needed: lake reforestation day",
+    "message": "Join us in September to plant native cedars and junipers around Yammouneh Lake. Tools, transport from the village square, and lunch provided.",
+    "severity": "info",
+    "date": "2026-06-15T08:30:00Z",
+    "linkURL": null
+  },
+  {
+    "id": "2026-trail-maps",
+    "title": "New spring-trail maps available",
+    "message": "Updated hiking maps covering 12 of the 84 springs are now available at the visitor point — ask our team or request them by email.",
+    "severity": "info",
+    "date": "2026-05-30T12:00:00Z",
+    "linkURL": null
+  }
+]

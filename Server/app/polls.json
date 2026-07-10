@@ -1,0 +1,25 @@
+[
+  {
+    "id": "2026-next-project",
+    "question": "Which project should YTA prioritize next?",
+    "details": "Your vote helps the board plan the 2027 budget. One vote per device — results are shared at the autumn community meeting.",
+    "closesAt": "2026-08-31T21:00:00Z",
+    "options": [
+      { "id": "boardwalk", "title": "Lake boardwalk & viewpoints", "votes": 148 },
+      { "id": "trail", "title": "Spring-to-spring hiking trail", "votes": 210 },
+      { "id": "ruins", "title": "Roman ruins visitor center", "votes": 96 },
+      { "id": "guesthouse", "title": "Community guesthouse", "votes": 173 }
+    ]
+  },
+  {
+    "id": "2026-festival-month",
+    "question": "Best month for the 2026 Summer Festival?",
+    "details": "Thanks to everyone who voted — August won and planning is underway.",
+    "closesAt": "2026-04-30T21:00:00Z",
+    "options": [
+      { "id": "july", "title": "July", "votes": 342 },
+      { "id": "august", "title": "August", "votes": 517 },
+      { "id": "september", "title": "September", "votes": 121 }
+    ]
+  }
+]

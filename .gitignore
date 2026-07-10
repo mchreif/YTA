@@ -1,0 +1,12 @@
+# Xcode project is generated from project.yml — run: xcodegen generate
+*.xcodeproj
+
+# Xcode user state and build artifacts
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+.DS_Store
