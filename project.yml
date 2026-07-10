@@ -44,5 +44,13 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         CODE_SIGN_STYLE: Automatic
         ENABLE_PREVIEWS: "YES"
-    scheme:
-      gatherCoverageData: false
+
+schemes:
+  YTA:
+    build:
+      targets:
+        YTA: all
+    run:
+      config: Debug
+    archive:
+      config: Release
