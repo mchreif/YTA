@@ -1,5 +1,6 @@
 import SwiftUI
 import AVKit
+import AVFoundation
 
 /// Full-screen video player with a close button — the native counterpart of
 /// the website's video modals (event promo and festival recaps).

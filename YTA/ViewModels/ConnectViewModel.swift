@@ -1,6 +1,7 @@
 import Foundation
 import MapKit
 import Observation
+import SwiftUI
 
 /// Presentation state and actions for the Connect screen.
 @MainActor

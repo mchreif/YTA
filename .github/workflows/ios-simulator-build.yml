@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Show Xcode version
         run: xcodebuild -version
@@ -26,15 +26,38 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
+      - name: List schemes
+        run: xcodebuild -list -project YTA.xcodeproj
+
       - name: Build for iOS Simulator (no code signing)
         run: |
+          set -o pipefail
           xcodebuild \
+            -project YTA.xcodeproj \
             -scheme YTA \
             -sdk iphonesimulator \
             -configuration Debug \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
-            build
+            build 2>&1 | tee xcodebuild.log
+
+      - name: Show compile errors (only runs when the build fails)
+        if: failure()
+        run: |
+          echo "===================== COMPILE ERRORS ====================="
+          grep -E "(^|: )(error|fatal error): " xcodebuild.log || \
+            grep -E "error:" xcodebuild.log || \
+            echo "No 'error:' lines found — download the xcodebuild-log artifact for the full log."
+          echo "==========================================================="
+
+      - name: Upload full build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: xcodebuild.log
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Package simulator app
         run: |
