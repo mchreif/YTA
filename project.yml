@@ -22,7 +22,16 @@ targets:
     type: application
     platform: iOS
     sources:
+      # Excludes act as a safety net: these features were removed from the
+      # app (July 2026); if stale copies linger in a working tree, they must
+      # never reach the compiler or the bundle.
       - path: YTA
+        excludes:
+          - "Views/Home/WelcomeAvatar.swift"
+          - "Views/Media/**"
+          - "ViewModels/MediaViewModel.swift"
+          - "Models/InstagramPost.swift"
+          - "Resources/Videos/welcome-message.mp4"
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: org.ytalebanon.app
