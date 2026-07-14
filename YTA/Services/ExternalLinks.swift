@@ -17,4 +17,17 @@ enum ExternalLinks {
 
     /// Instagram handle displayed in the media section.
     static let instagramHandle = "yta_leb"
+
+    /// Apple Maps link for a coordinate in satellite view — used by
+    /// Connect and every attraction detail's Directions action
+    /// (the site's Google link also opens satellite, `t=k`).
+    static func appleMapsURL(latitude: Double, longitude: Double, label: String) -> URL {
+        var components = URLComponents(string: "https://maps.apple.com/")!
+        components.queryItems = [
+            URLQueryItem(name: "ll", value: "\(latitude),\(longitude)"),
+            URLQueryItem(name: "q", value: label),
+            URLQueryItem(name: "t", value: "k")
+        ]
+        return components.url!
+    }
 }

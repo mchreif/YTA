@@ -24,7 +24,7 @@ struct MissionSection: View {
         VStack(spacing: 16) {
             Spacer(minLength: 58)
 
-            SectionHeader(number: "01", title: "Mission")
+            SceneTitle(eyebrow: "What YTA does", title: "The mission")
                 .padding(.horizontal, YTAMetrics.gutter)
 
             carousel
@@ -114,7 +114,7 @@ private struct ProgramCard: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(program.title)
-                    .font(YTAFont.bold(19, relativeTo: .title3))
+                    .font(YTAFont.displayRegular(21, relativeTo: .title3))
                     .foregroundStyle(Color.ytaTextPrimary)
                     .lineLimit(2)
 
@@ -123,6 +123,20 @@ private struct ProgramCard: View {
                     .foregroundStyle(Color.ytaTextSecondary)
                     .lineSpacing(3)
                     .lineLimit(6)
+
+                // Honest state: the next festival has no officially
+                // published date yet (asset request #2).
+                if !program.festivalVideos.isEmpty {
+                    Label {
+                        Text("Next edition — date to be announced")
+                            .font(YTAFont.medium(12, relativeTo: .caption))
+                    } icon: {
+                        Image(systemName: "calendar.badge.clock")
+                            .font(.system(size: 12, weight: .semibold))
+                    }
+                    .foregroundStyle(Color.ytaGold)
+                    .padding(.top, 2)
+                }
             }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)

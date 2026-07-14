@@ -18,13 +18,19 @@ YTA/
 │   ├── Splash/         SplashView + AnimatedMeshBackground (iOS 18 MeshGradient)
 │   ├── Home/           HomeView — full-screen vertical pager (hero / mission / impact / board
 │   │                   pages with snap paging + tappable page indicator, alerts bell)
-│   ├── Gallery/        GalleryView + PhotoLightbox
+│   ├── Gallery/        GalleryView — the "Explore" journey (seasonal scene header,
+│   │                   gold route-line, filmstrip) + AttractionDetailView (iOS 18
+│   │                   zoom transition, Ken Burns hero, official story, related
+│   │                   scenes) + PhotoLightbox
 │   ├── Community/      CommunityView — AlertCard + PollCard (animated results)
 │   ├── Media/          MediaHubView (channel switcher), MediaView, PressView (in Press/)
 │   ├── Press/          PressView + NewsArticleCard
 │   ├── Connect/        ConnectView + ContactChip
-│   └── Components/     SectionHeader, button styles, CountUpText, TickerView, ConfettiBurst,
-│                       LoopingVideoView, VideoPlayerSheet, SafariView
+│   └── Components/     SceneComponents (SceneTitle, KenBurnsImage, SceneScrim,
+│                       AwaitingDataCard, RouteConnector — the "Cinema of the Valley"
+│                       design language), SectionHeader, button styles, CountUpText,
+│                       TickerView, ConfettiBurst, LoopingVideoView, VideoPlayerSheet,
+│                       SafariView
 ├── Managers/           HapticsManager, NotificationManager, CommunityBackgroundRefresh
 ├── Extensions/         Color+Hex (incl. dynamic light/dark colors)
 ├── Resources/          Videos (5 × MP4), Fonts (Outfit ×4, Fraunces ×4),

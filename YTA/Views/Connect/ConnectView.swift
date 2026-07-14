@@ -13,12 +13,8 @@ struct ConnectView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 26) {
-                SectionHeader(
-                    number: "07",
-                    title: "Connect",
-                    subtitle: "Visit Yammouneh · Partner with YTA"
-                )
-                .padding(.top, 24)
+                sceneBanner
+                    .padding(.top, 12)
 
                 Text(content.connectLead)
                     .font(YTAFont.body(15, relativeTo: .subheadline))
@@ -46,6 +42,40 @@ struct ConnectView: View {
             .ignoresSafeArea()
         )
         .scrollIndicators(.hidden)
+    }
+
+    // MARK: Scene banner
+
+    /// Cinematic opener for the visit screen — the reserve photograph
+    /// (site gallery, official caption "Natural Reserve") under the
+    /// site's own partnership line.
+    private var sceneBanner: some View {
+        ZStack(alignment: .bottomLeading) {
+            KenBurnsImage(imageName: "gallery-yam8", duration: 20)
+
+            LinearGradient(
+                colors: [.clear, Color.ytaNavy.opacity(0.85)],
+                startPoint: .center,
+                endPoint: .bottom
+            )
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Visit Yammouneh · Partner with YTA")
+                    .font(YTAFont.semibold(10, relativeTo: .caption))
+                    .kerning(1.8)
+                    .textCase(.uppercase)
+                    .foregroundStyle(Color.ytaGold)
+                Text("Plan Your Visit")
+                    .font(YTAFont.display(30, relativeTo: .title))
+                    .foregroundStyle(.white)
+            }
+            .padding(16)
+        }
+        .frame(height: 210)
+        .clipShape(RoundedRectangle(cornerRadius: YTAMetrics.radius, style: .continuous))
+        .padding(.horizontal, YTAMetrics.gutter)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
     }
 
     // MARK: Contact actions

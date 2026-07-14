@@ -22,6 +22,9 @@ extension Color {
     /// Deep navy used by the Impact section and footer — `#0f172a`.
     static let ytaNavy = Color(hex: 0x0F172A)
 
+    /// Elevated surface on navy scenes (cards over the night ground).
+    static let ytaNavyElevated = Color(hex: 0x16233B)
+
     /// Sky blue used by the nav bar and Connect section — `#d2edf9`.
     static let ytaSky = Color(light: 0xD2EDF9, dark: 0x13293A)
 

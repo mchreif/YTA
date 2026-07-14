@@ -138,14 +138,42 @@ final class ContentStore {
 
     // MARK: Gallery
 
+    /// The six official gallery scenes. Titles are the site's own captions;
+    /// `season` is a visual grouping of what each photo depicts, and
+    /// `storyProgramID` links each scene to the official mission text
+    /// that narrates it (nature, landmarks, heritage) — no new copy.
     let galleryPhotos: [GalleryPhoto] = [
-        GalleryPhoto(id: "yam1", number: "01", title: "Yammouneh River", imageName: "gallery-yam1"),
-        GalleryPhoto(id: "yam2", number: "02", title: "Roman Ruins", imageName: "gallery-yam2"),
-        GalleryPhoto(id: "yam6", number: "03", title: "Icy Beauty", imageName: "gallery-yam6"),
-        GalleryPhoto(id: "yam4", number: "04", title: "Autumn Reflections", imageName: "gallery-yam4"),
-        GalleryPhoto(id: "yam7", number: "05", title: "Shared Heritage", imageName: "gallery-yam7"),
-        GalleryPhoto(id: "yam8", number: "06", title: "Natural Reserve", imageName: "gallery-yam8")
+        GalleryPhoto(id: "yam1", number: "01", title: "Yammouneh River", imageName: "gallery-yam1", season: .summer, storyProgramID: "p4"),
+        GalleryPhoto(id: "yam2", number: "02", title: "Roman Ruins", imageName: "gallery-yam2", season: .summer, storyProgramID: "p5"),
+        GalleryPhoto(id: "yam6", number: "03", title: "Icy Beauty", imageName: "gallery-yam6", season: .winter, storyProgramID: "p4"),
+        GalleryPhoto(id: "yam4", number: "04", title: "Autumn Reflections", imageName: "gallery-yam4", season: .autumn, storyProgramID: "p4"),
+        GalleryPhoto(id: "yam7", number: "05", title: "Shared Heritage", imageName: "gallery-yam7", season: .autumn, storyProgramID: "p3"),
+        GalleryPhoto(id: "yam8", number: "06", title: "Natural Reserve", imageName: "gallery-yam8", season: .summer, storyProgramID: "p4")
     ]
+
+    /// The season hero image for the Explore scene header
+    /// (river = summer, reflections = autumn, ice = winter — the site's
+    /// own photographs of the same valley through the year).
+    func seasonHero(for season: ValleySeason) -> GalleryPhoto {
+        switch season {
+        case .summer: galleryPhotos[0]
+        case .autumn: galleryPhotos[3]
+        case .winter: galleryPhotos[2]
+        }
+    }
+
+    /// Resolves the official mission program that narrates a scene.
+    func program(withID id: String) -> Program? {
+        programs.first { $0.id == id }
+    }
+
+    /// Other scenes shown in a detail screen's "Related" rail:
+    /// same story program or same season, never the scene itself.
+    func relatedPhotos(to photo: GalleryPhoto) -> [GalleryPhoto] {
+        galleryPhotos.filter {
+            $0.id != photo.id && ($0.storyProgramID == photo.storyProgramID || $0.season == photo.season)
+        }
+    }
 
     // MARK: Media
 

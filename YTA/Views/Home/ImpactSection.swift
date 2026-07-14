@@ -19,16 +19,15 @@ struct ImpactSection: View {
         VStack(spacing: 18) {
             Spacer(minLength: 58)
 
-            SectionHeader(
-                number: "02",
-                title: "Our Impact",
-                subtitle: "Roots in community, reach across Lebanon",
+            SceneTitle(
+                eyebrow: "Our Impact",
+                title: "Roots in community, reach across Lebanon",
                 onDark: true
             )
 
             Text(content.impactIntro)
                 .font(YTAFont.body(14, relativeTo: .footnote))
-                .foregroundStyle(.white.opacity(0.75))
+                .foregroundStyle(.white.opacity(0.8))
                 .multilineTextAlignment(.center)
                 .lineSpacing(3)
                 .frame(maxWidth: 620)
@@ -43,7 +42,15 @@ struct ImpactSection: View {
         }
         .padding(.horizontal, YTAMetrics.gutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.ytaNavy)
+        .background {
+            // The verified figures play over the association's own
+            // reforestation photograph (#programs, nature.png) — the
+            // impact story told on its landscape.
+            ZStack {
+                KenBurnsImage(imageName: "mission-nature", duration: 22)
+                Color.ytaNavy.opacity(0.84)
+            }
+        }
         .onScrollVisibilityChange(threshold: 0.25) { visible in
             if visible { onBecameVisible() }
         }

@@ -93,7 +93,8 @@ struct RootView: View {
                     onOpenAlerts: {
                         community.requestedSegment = .alerts
                         selection = .community
-                    }
+                    },
+                    onPlanVisit: { selection = .connect }
                 )
             }
             Tab(AppTab.yammouneh.title, systemImage: AppTab.yammouneh.systemImage, value: AppTab.yammouneh) {
