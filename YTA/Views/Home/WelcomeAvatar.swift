@@ -1,5 +1,7 @@
 import SwiftUI
 import AVFoundation
+import CoreImage
+import CoreVideo
 
 /// The hero welcome avatar — the native version of the website's
 /// poster-to-video reveal: a cut-out of Ali Chreif stands over the hero;
@@ -8,9 +10,9 @@ import AVFoundation
 ///
 /// Provenance: poster `welcome_avatar.png` and video `menhem-ios.mp4`
 /// are the site's own hero assets; the accessibility label is the site's
-/// aria-label. The video ships with a black background — the same
-/// screen-blend keying trick the website uses makes it melt into the
-/// dark hero.
+/// aria-label. The clip ships with a black backdrop — exactly like the
+/// website's canvas keyer, a Core Image color-cube turns those black
+/// pixels transparent so only the speaker floats over the hero.
 struct WelcomeAvatar: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -63,9 +65,9 @@ struct WelcomeAvatar: View {
     }
 }
 
-/// Inline player for the welcome video: plays once with sound, reports
-/// completion, and screen-blends its layer so the clip's black backdrop
-/// disappears against the dark hero.
+/// Inline player for the welcome message: plays once with sound, reports
+/// completion, and applies a black-key video composition so the clip's
+/// backdrop is genuinely transparent over the hero.
 private struct WelcomeVideoPlayer: UIViewRepresentable {
 
     let url: URL
@@ -108,19 +110,28 @@ private struct WelcomeVideoPlayer: UIViewRepresentable {
 
         func configure(with url: URL, coordinator: Coordinator) {
             self.coordinator = coordinator
-            // The welcome message is spoken — use the playback category
-            // so it is audible; the muted hero loop is unaffected.
-            try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
 
-            let item = AVPlayerItem(url: url)
+            // The welcome message is spoken — switch to the playback
+            // category and activate the session so the voice is audible
+            // even though the muted hero loop registered as ambient.
+            let session = AVAudioSession.sharedInstance()
+            try? session.setCategory(.playback, mode: .moviePlayback)
+            try? session.setActive(true)
+
+            let asset = AVURLAsset(url: url)
+            let item = AVPlayerItem(asset: asset)
             let player = AVPlayer(playerItem: item)
+            player.isMuted = false
+            player.volume = 1
             self.player = player
+
             playerLayer.player = player
             playerLayer.videoGravity = .resizeAspect
-            // Same keying idea as the website: screen-blend removes the
-            // clip's black background over the dark hero. If the filter
-            // is unavailable the video simply renders in its frame.
-            layer.compositingFilter = "screenBlendMode"
+            // Request an alpha-capable pixel format so keyed frames
+            // composite transparently over the hero.
+            playerLayer.pixelBufferAttributes = [
+                kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
+            ]
 
             coordinator.endObserver = NotificationCenter.default.addObserver(
                 forName: AVPlayerItem.didPlayToEndTimeNotification,
@@ -129,7 +140,41 @@ private struct WelcomeVideoPlayer: UIViewRepresentable {
             ) { [weak coordinator] _ in
                 coordinator?.onFinished()
             }
-            player.play()
+
+            // Build the black-key composition off the main thread, then
+            // start playback. If composition creation fails for any
+            // reason, the clip still plays (unkeyed) rather than staying
+            // silent and blank.
+            let cubeData = Self.blackKeyCubeData
+            Task { [weak self] in
+                let composition = try? await AVMutableVideoComposition.videoComposition(
+                    with: asset,
+                    applyingCIFiltersWithHandler: { request in
+                        guard
+                            let filter = CIFilter(
+                                name: "CIColorCubeWithColorSpace",
+                                parameters: [
+                                    "inputCubeDimension": Self.cubeDimension,
+                                    "inputCubeData": cubeData,
+                                    "inputColorSpace": CGColorSpaceCreateDeviceRGB(),
+                                    kCIInputImageKey: request.sourceImage
+                                ]
+                            ),
+                            let output = filter.outputImage
+                        else {
+                            request.finish(with: request.sourceImage, context: nil)
+                            return
+                        }
+                        request.finish(with: output, context: nil)
+                    }
+                )
+                await MainActor.run { [weak self] in
+                    if let composition {
+                        self?.player?.currentItem?.videoComposition = composition
+                    }
+                    self?.player?.play()
+                }
+            }
         }
 
         func teardown() {
@@ -141,6 +186,38 @@ private struct WelcomeVideoPlayer: UIViewRepresentable {
             player = nil
             playerLayer.player = nil
         }
+
+        // MARK: Black-key color cube
+
+        static let cubeDimension = 32
+
+        /// Color cube mapping near-black pixels to transparent with a soft
+        /// rolloff — the same keying the website performs per-pixel on its
+        /// canvas. Colors are premultiplied by the computed alpha.
+        static let blackKeyCubeData: Data = {
+            let size = cubeDimension
+            let lowCut: Float = 0.10   // fully transparent below
+            let highCut: Float = 0.24  // fully opaque above
+            var cube = [Float]()
+            cube.reserveCapacity(size * size * size * 4)
+            for b in 0..<size {
+                for g in 0..<size {
+                    for r in 0..<size {
+                        let rf = Float(r) / Float(size - 1)
+                        let gf = Float(g) / Float(size - 1)
+                        let bf = Float(b) / Float(size - 1)
+                        let brightness = max(rf, max(gf, bf))
+                        let t = min(max((brightness - lowCut) / (highCut - lowCut), 0), 1)
+                        let alpha = t * t * (3 - 2 * t) // smoothstep
+                        cube.append(rf * alpha)
+                        cube.append(gf * alpha)
+                        cube.append(bf * alpha)
+                        cube.append(alpha)
+                    }
+                }
+            }
+            return cube.withUnsafeBufferPointer { Data(buffer: $0) }
+        }()
     }
 }
 

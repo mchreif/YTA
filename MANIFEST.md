@@ -1,5 +1,13 @@
 # Release manifest — "Cinema of the Valley" redesign
 
+## Wave 1.2 — splash seam + real video keying + audio fix
+
+| File | Change |
+|---|---|
+| `YTA/Assets.xcassets/splash-logo.imageset` *(added)* | The official logo pre-composed onto a pure-white circle (derived from `NGO LOGO.jpg`, nothing added) — eliminates the visible JPEG seam on the splash |
+| `YTA/Views/Splash/SplashView.swift` | Uses the seamless composed asset; full logo always visible |
+| `YTA/Views/Home/WelcomeAvatar.swift` | Real transparency: Core Image color-cube black-keying via an `AVMutableVideoComposition` (native equivalent of the website's canvas keyer) replaces the blend-mode approximation; audio session now set to `.playback` **and activated**, player explicitly unmuted — the welcome voice plays |
+
 ## Wave 1.1 — hero welcome avatar + review fixes
 
 | File | Change |
