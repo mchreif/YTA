@@ -51,35 +51,40 @@ struct CommunityView: View {
         }
     }
 
-    /// Compact brand banner over the animated mesh.
+    /// Scene banner in the app's cinematic language: the association's
+    /// own festival-crowd photograph (site #programs, festivals.png)
+    /// under a serif title — community is the festival crowd.
     private var header: some View {
-        ZStack {
-            AnimatedMeshBackground()
-                .frame(height: 148)
-                .clipShape(RoundedRectangle(cornerRadius: YTAMetrics.radius, style: .continuous))
+        ZStack(alignment: .bottomLeading) {
+            KenBurnsImage(imageName: "mission-festivals", duration: 20)
 
-            VStack(spacing: 6) {
-                Image("logo-ngo")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 52, height: 52)
-                    .clipShape(Circle())
-                    .overlay(Circle().strokeBorder(.white.opacity(0.8), lineWidth: 2))
+            LinearGradient(
+                stops: [
+                    .init(color: .clear, location: 0.25),
+                    .init(color: Color.ytaNavy.opacity(0.9), location: 1)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
 
-                Text("Community")
-                    .font(YTAFont.bold(21, relativeTo: .title2))
-                    .textCase(.uppercase)
-                    .kerning(2)
-                    .foregroundStyle(.white)
-
+            VStack(alignment: .leading, spacing: 5) {
                 Text("Alerts & project votes from YTA")
-                    .font(YTAFont.body(12, relativeTo: .caption))
-                    .foregroundStyle(.white.opacity(0.75))
+                    .font(YTAFont.semibold(10, relativeTo: .caption))
+                    .kerning(1.8)
+                    .textCase(.uppercase)
+                    .foregroundStyle(Color.ytaGold)
+                Text("Community")
+                    .font(YTAFont.display(30, relativeTo: .title))
+                    .foregroundStyle(.white)
             }
+            .padding(16)
         }
+        .frame(height: 190)
+        .clipShape(RoundedRectangle(cornerRadius: YTAMetrics.radius, style: .continuous))
         .padding(.horizontal, YTAMetrics.gutter)
         .padding(.top, 12)
         .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
     }
 
     /// One-line freshness indicator under the segment picker.

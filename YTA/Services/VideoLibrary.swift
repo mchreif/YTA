@@ -12,6 +12,10 @@ enum VideoLibrary {
     /// The "Upcoming Event" promo (summer festival announcement).
     static var upcomingEvent: URL? { url(for: "summer-festival") }
 
+    /// The hero welcome message from Ali Chreif
+    /// (the website's `menhem-ios.mp4` avatar video).
+    static var welcomeMessage: URL? { url(for: "welcome-message") }
+
     /// Resolves a bundled video by resource name (without extension).
     static func url(for resourceName: String) -> URL? {
         Bundle.main.url(forResource: resourceName, withExtension: "mp4")

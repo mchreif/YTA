@@ -1,4 +1,18 @@
-# Release manifest — "Cinema of the Valley" redesign (wave 1)
+# Release manifest — "Cinema of the Valley" redesign
+
+## Wave 1.1 — hero welcome avatar + review fixes
+
+| File | Change |
+|---|---|
+| `YTA/Views/Home/WelcomeAvatar.swift` *(added)* | The website's hero welcome avatar, now native: tap the cut-out of Ali Chreif and his welcome message plays inline (screen-blend keying melts the clip's black backdrop into the dark hero), collapsing back on completion. Poster `welcome_avatar.png` + video `menhem-ios.mp4` are the site's own hero assets |
+| `YTA/Assets.xcassets/welcome-avatar.imageset` *(added)* | Official poster cut-out (alpha preserved, never cropped) |
+| `YTA/Resources/Videos/welcome-message.mp4` *(added)* | Official welcome video (site: menhem-ios.mp4, 1.8 MB) |
+| `YTA/Services/VideoLibrary.swift` | Added `welcomeMessage` resolver |
+| `YTA/Views/Home/HeroSection.swift` | Welcome avatar placed above the hero actions, trailing — as on the website |
+| `YTA/Views/Splash/SplashView.swift` | Logo now fitted on a white circular plate — the full mark is visible, nothing cropped |
+| `YTA/Views/Community/CommunityView.swift` | Header rebuilt as a cinematic scene banner (official festival-crowd photograph + serif title); cropped-logo mesh banner removed |
+
+## Wave 1 — approved Direction B implementation
 
 Design direction B, approved July 2026. All content, data, community feed,
 networking, deep links, XcodeGen configuration and the CI workflow are

@@ -35,15 +35,20 @@ struct SplashView: View {
                         }
                     }
 
-                    Image("logo-ngo")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 148, height: 148)
-                        .clipShape(Circle())
-                        .overlay(Circle().strokeBorder(.white.opacity(0.85), lineWidth: 3))
-                        .shadow(color: .black.opacity(0.35), radius: 24, y: 10)
-                        .scaleEffect(logoVisible ? 1 : 0.55)
-                        .opacity(logoVisible ? 1 : 0)
+                    // The full logo sits on a white plate inside the
+                    // circle — fitted, never cropped.
+                    ZStack {
+                        Circle().fill(.white)
+                        Image("logo-ngo")
+                            .resizable()
+                            .scaledToFit()
+                            .padding(20)
+                    }
+                    .frame(width: 148, height: 148)
+                    .overlay(Circle().strokeBorder(.white.opacity(0.85), lineWidth: 3))
+                    .shadow(color: .black.opacity(0.35), radius: 24, y: 10)
+                    .scaleEffect(logoVisible ? 1 : 0.55)
+                    .opacity(logoVisible ? 1 : 0)
                 }
 
                 VStack(spacing: 10) {

@@ -1,6 +1,9 @@
 # Xcode project is generated from project.yml — run: xcodegen generate
 *.xcodeproj
 
+# Distribution archives (never commit)
+*.zip
+
 # Xcode user state and build artifacts
 xcuserdata/
 *.xcuserstate
