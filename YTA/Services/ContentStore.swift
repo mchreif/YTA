@@ -8,11 +8,10 @@ import Observation
 /// `index.html` / `yta-instagram-feed.js` — so the native app bundles the
 /// same content and works fully offline.
 ///
-/// **Integration point:** if YTA later exposes a content API (or the
-/// Instagram Graph API is connected), replace the stored properties below
-/// with `async` loads inside `refresh()` and the UI will update automatically
-/// through Observation. The models are already `Sendable` and decodable-shaped
-/// for that purpose.
+/// **Integration point:** if YTA later exposes a content API, replace the
+/// stored properties below with `async` loads inside `refresh()` and the
+/// UI will update automatically through Observation. The models are
+/// already `Sendable` and decodable-shaped for that purpose.
 @MainActor
 @Observable
 final class ContentStore {
@@ -138,29 +137,31 @@ final class ContentStore {
 
     // MARK: Gallery
 
+    /// The six official gallery scenes. Titles are the site's own captions;
+    /// `season` is a visual grouping of what each photo depicts, and
+    /// `storyProgramID` links each scene to the official mission text
+    /// that narrates it (nature, landmarks, heritage) — no new copy.
     let galleryPhotos: [GalleryPhoto] = [
-        GalleryPhoto(id: "yam1", number: "01", title: "Yammouneh River", imageName: "gallery-yam1"),
-        GalleryPhoto(id: "yam2", number: "02", title: "Roman Ruins", imageName: "gallery-yam2"),
-        GalleryPhoto(id: "yam6", number: "03", title: "Icy Beauty", imageName: "gallery-yam6"),
-        GalleryPhoto(id: "yam4", number: "04", title: "Autumn Reflections", imageName: "gallery-yam4"),
-        GalleryPhoto(id: "yam7", number: "05", title: "Shared Heritage", imageName: "gallery-yam7"),
-        GalleryPhoto(id: "yam8", number: "06", title: "Natural Reserve", imageName: "gallery-yam8")
+        GalleryPhoto(id: "yam1", number: "01", title: "Yammouneh River", imageName: "gallery-yam1", season: .summer, storyProgramID: "p4"),
+        GalleryPhoto(id: "yam2", number: "02", title: "Roman Ruins", imageName: "gallery-yam2", season: .summer, storyProgramID: "p5"),
+        GalleryPhoto(id: "yam6", number: "03", title: "Icy Beauty", imageName: "gallery-yam6", season: .winter, storyProgramID: "p4"),
+        GalleryPhoto(id: "yam4", number: "04", title: "Autumn Reflections", imageName: "gallery-yam4", season: .autumn, storyProgramID: "p4"),
+        GalleryPhoto(id: "yam7", number: "05", title: "Shared Heritage", imageName: "gallery-yam7", season: .autumn, storyProgramID: "p3"),
+        GalleryPhoto(id: "yam8", number: "06", title: "Natural Reserve", imageName: "gallery-yam8", season: .summer, storyProgramID: "p4")
     ]
 
-    // MARK: Media
+    /// Resolves the official mission program that narrates a scene.
+    func program(withID id: String) -> Program? {
+        programs.first { $0.id == id }
+    }
 
-    /// Instagram posts, mirroring `assets/js/yta-instagram-feed.js`.
-    let instagramPosts: [InstagramPost] = [
-        InstagramPost(id: "DPjpuidDMbP", kind: .post, likes: 186, comments: 14, views: nil),
-        InstagramPost(id: "DPhwFubDHf-", kind: .post, likes: 142, comments: 9, views: nil),
-        InstagramPost(id: "DPhumj3DCiw", kind: .post, likes: 203, comments: 18, views: nil),
-        InstagramPost(id: "DPhucS2jHwT", kind: .post, likes: 97, comments: 6, views: nil),
-        InstagramPost(id: "DPgQq3ODEJY", kind: .post, likes: 264, comments: 22, views: nil),
-        InstagramPost(id: "DPR8ZQTjGo8", kind: .post, likes: 118, comments: 11, views: nil),
-        InstagramPost(id: "DOr4pVDiDNb", kind: .post, likes: 175, comments: 13, views: nil),
-        InstagramPost(id: "DOfv8GRDPl6", kind: .reel, likes: 312, comments: 27, views: 4820),
-        InstagramPost(id: "DOebvbTDBP0", kind: .post, likes: 89, comments: 5, views: nil)
-    ]
+    /// Other scenes shown in a detail screen's "Related" rail:
+    /// same story program or same season, never the scene itself.
+    func relatedPhotos(to photo: GalleryPhoto) -> [GalleryPhoto] {
+        galleryPhotos.filter {
+            $0.id != photo.id && ($0.storyProgramID == photo.storyProgramID || $0.season == photo.season)
+        }
+    }
 
     // MARK: Press
 
