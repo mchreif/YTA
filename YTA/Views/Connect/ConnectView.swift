@@ -14,7 +14,6 @@ struct ConnectView: View {
         ScrollView {
             VStack(spacing: 26) {
                 sceneBanner
-                    .padding(.top, 12)
 
                 Text(content.connectLead)
                     .font(YTAFont.body(15, relativeTo: .subheadline))
@@ -41,24 +40,22 @@ struct ConnectView: View {
             )
             .ignoresSafeArea()
         )
+        .ignoresSafeArea(edges: .top)
         .scrollIndicators(.hidden)
     }
 
     // MARK: Scene banner
 
     /// Cinematic opener for the visit screen — the reserve photograph
-    /// (site gallery, official caption "Natural Reserve") under the
-    /// site's own partnership line.
+    /// (site gallery, official caption "Natural Reserve") as a full-width
+    /// hero dissolving into this screen's background, matching the
+    /// Explore transition language.
     private var sceneBanner: some View {
-        ZStack(alignment: .bottomLeading) {
-            KenBurnsImage(imageName: "gallery-yam8", duration: 20)
-
-            LinearGradient(
-                colors: [.clear, Color.ytaNavy.opacity(0.85)],
-                startPoint: .center,
-                endPoint: .bottom
-            )
-
+        YammounehHeroTransition(
+            imageName: "gallery-yam8",
+            height: 264,
+            fadeColor: .ytaBackground
+        ) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Visit Yammouneh · Partner with YTA")
                     .font(YTAFont.semibold(10, relativeTo: .caption))
@@ -69,11 +66,11 @@ struct ConnectView: View {
                     .font(YTAFont.display(30, relativeTo: .title))
                     .foregroundStyle(.white)
             }
-            .padding(16)
+            .shadow(color: .black.opacity(0.55), radius: 6, y: 1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, YTAMetrics.gutter)
+            .padding(.bottom, 62)
         }
-        .frame(height: 210)
-        .clipShape(RoundedRectangle(cornerRadius: YTAMetrics.radius, style: .continuous))
-        .padding(.horizontal, YTAMetrics.gutter)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
     }

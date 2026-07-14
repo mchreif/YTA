@@ -25,6 +25,12 @@ extension Color {
     /// Elevated surface on navy scenes (cards over the night ground).
     static let ytaNavyElevated = Color(hex: 0x16233B)
 
+    /// The Explore journey ground — sampled from the bottom edge of the
+    /// approved Yammouneh hero artwork (`#161C2E`), so the hero's fade
+    /// and the journey background are the *same* color and can never
+    /// show a seam. Use this token in both places; never a second navy.
+    static let ytaJourneyBackground = Color(hex: 0x161C2E)
+
     /// Sky blue used by the nav bar and Connect section — `#d2edf9`.
     static let ytaSky = Color(light: 0xD2EDF9, dark: 0x13293A)
 

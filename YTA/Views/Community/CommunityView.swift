@@ -12,15 +12,22 @@ struct CommunityView: View {
 
         ZStack {
             ScrollView {
-                VStack(spacing: 20) {
-                    header
+                VStack(spacing: 18) {
+                    // Approved header artwork (title and subtitle embedded)
+                    // with the segment control hanging into its teal wave.
+                    ZStack(alignment: .bottom) {
+                        header
 
-                    Picker("Section", selection: $viewModel.segment) {
-                        Text("Alerts").tag(CommunityStore.Segment.alerts)
-                        Text("Polls").tag(CommunityStore.Segment.polls)
+                        Picker("Section", selection: $viewModel.segment) {
+                            Text("Alerts").tag(CommunityStore.Segment.alerts)
+                            Text("Polls").tag(CommunityStore.Segment.polls)
+                        }
+                        .pickerStyle(.segmented)
+                        .frame(maxWidth: 320)
+                        .padding(.horizontal, YTAMetrics.gutter * 2)
+                        .offset(y: 18)
                     }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal, YTAMetrics.gutter)
+                    .padding(.bottom, 18)
 
                     syncStatus
 
@@ -51,40 +58,19 @@ struct CommunityView: View {
         }
     }
 
-    /// Scene banner in the app's cinematic language: the association's
-    /// own festival-crowd photograph (site #programs, festivals.png)
-    /// under a serif title — community is the festival crowd.
+    /// The approved Community header artwork — title, subtitle and the
+    /// teal wave are part of the image, so nothing is drawn over it.
+    /// Clipped just inside its baked corners so no white fringe shows.
     private var header: some View {
-        ZStack(alignment: .bottomLeading) {
-            KenBurnsImage(imageName: "mission-festivals", duration: 20)
-
-            LinearGradient(
-                stops: [
-                    .init(color: .clear, location: 0.25),
-                    .init(color: Color.ytaNavy.opacity(0.9), location: 1)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-
-            VStack(alignment: .leading, spacing: 5) {
-                Text("Alerts & project votes from YTA")
-                    .font(YTAFont.semibold(10, relativeTo: .caption))
-                    .kerning(1.8)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Color.ytaGold)
-                Text("Community")
-                    .font(YTAFont.display(30, relativeTo: .title))
-                    .foregroundStyle(.white)
-            }
-            .padding(16)
-        }
-        .frame(height: 190)
-        .clipShape(RoundedRectangle(cornerRadius: YTAMetrics.radius, style: .continuous))
-        .padding(.horizontal, YTAMetrics.gutter)
-        .padding(.top, 12)
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
+        Image("community-header")
+            .resizable()
+            .scaledToFit()
+            .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+            .shadow(color: .black.opacity(0.14), radius: 14, y: 6)
+            .padding(.horizontal, YTAMetrics.gutter)
+            .padding(.top, 10)
+            .accessibilityLabel("Community — alerts and project updates from YTA")
+            .accessibilityAddTraits(.isHeader)
     }
 
     /// One-line freshness indicator under the segment picker.

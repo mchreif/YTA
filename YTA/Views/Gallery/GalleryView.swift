@@ -12,6 +12,8 @@ struct GalleryView: View {
     @Environment(ContentStore.self) private var content
     @State private var viewModel = GalleryViewModel()
     @State private var season: ValleySeason = .summer
+    /// Scroll offset feeding the hero's parallax (0 at rest).
+    @State private var heroOffset: CGFloat = 0
     @Namespace private var zoomNamespace
     @Namespace private var lightboxNamespace
 
@@ -20,14 +22,40 @@ struct GalleryView: View {
             ZStack {
                 ScrollView {
                     VStack(spacing: 0) {
-                        seasonScene
-                        journey
-                        filmstrip
+                        // The approved hero artwork (title embedded in the
+                        // image) dissolving into the journey ground; the
+                        // season selector hangs into the transition zone.
+                        YammounehHeroTransition(
+                            imageName: "yammouneh-header",
+                            height: 450,
+                            fadeColor: .ytaJourneyBackground,
+                            scrollOffset: heroOffset
+                        ) {
+                            EmptyView()
+                        }
+                        .overlay(alignment: .bottom) {
+                            seasonSwitcher
+                                .offset(y: 22)
+                        }
+                        .zIndex(1)
+
+                        VStack(spacing: 0) {
+                            journey
+                            filmstrip
+                        }
+                        .background(alignment: .top) {
+                            JourneyAtmosphere()
+                        }
                     }
                 }
-                .background(Color.ytaNavy)
+                .background(Color.ytaJourneyBackground)
                 .ignoresSafeArea(edges: .top)
                 .scrollIndicators(.hidden)
+                .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                    geometry.contentOffset.y + geometry.contentInsets.top
+                } action: { _, offset in
+                    heroOffset = offset
+                }
                 .toolbarVisibility(.hidden, for: .navigationBar)
 
                 if let photo = viewModel.selectedPhoto {
@@ -52,68 +80,37 @@ struct GalleryView: View {
         .animation(.spring(duration: 0.35), value: viewModel.selectedPhoto)
     }
 
-    // MARK: Season scene
+    // MARK: Season selector
 
-    /// Full-bleed header: the same valley in summer, autumn and winter —
-    /// crossfading between the site's own seasonal photographs.
-    private var seasonScene: some View {
-        ZStack(alignment: .bottomLeading) {
-            ZStack {
-                ForEach(ValleySeason.allCases) { s in
-                    KenBurnsImage(imageName: content.seasonHero(for: s).imageName)
-                        .opacity(s == season ? 1 : 0)
-                }
-            }
-            .animation(.easeInOut(duration: 0.9), value: season)
-
-            SceneScrim()
-
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Nature, History, and Living Heritage")
-                    .font(YTAFont.semibold(10, relativeTo: .caption))
-                    .kerning(2.2)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Color.ytaGold)
-
-                Text("Yammouneh")
-                    .font(YTAFont.display(38, relativeTo: .largeTitle))
-                    .foregroundStyle(.white)
-
-                seasonSwitcher
-                    .padding(.top, 4)
-            }
-            .padding(.horizontal, YTAMetrics.gutter)
-            .padding(.bottom, 22)
-        }
-        .frame(height: 380)
-        .clipped()
-        .accessibilityElement(children: .contain)
-    }
-
-    /// Summer / Autumn / Winter capsule switch.
+    /// Refined floating capsule: light translucency, thin border, strong
+    /// selected state — hanging in the hero's transition zone. The HStack
+    /// mirrors automatically under RTL.
     private var seasonSwitcher: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 4) {
             ForEach(ValleySeason.allCases) { s in
                 Button {
                     HapticsManager.selection()
-                    season = s
+                    withAnimation(.spring(duration: 0.35)) {
+                        season = s
+                    }
                 } label: {
                     Text(s.title)
                         .font(YTAFont.semibold(12, relativeTo: .caption))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 7)
+                        .foregroundStyle(season == s ? .white : .white.opacity(0.72))
+                        .padding(.horizontal, 15)
+                        .padding(.vertical, 8)
                         .background(
-                            season == s ? AnyShapeStyle(Color.ytaGreen) : AnyShapeStyle(.ultraThinMaterial),
+                            season == s ? Color.ytaGreen : Color.clear,
                             in: Capsule()
-                        )
-                        .overlay(
-                            Capsule().strokeBorder(.white.opacity(season == s ? 0 : 0.35), lineWidth: 1)
                         )
                 }
                 .accessibilityAddTraits(season == s ? .isSelected : [])
             }
         }
+        .padding(4)
+        .background(Color.white.opacity(0.10), in: Capsule())
+        .overlay(Capsule().strokeBorder(.white.opacity(0.22), lineWidth: 1))
+        .shadow(color: .black.opacity(0.35), radius: 12, y: 5)
     }
 
     // MARK: Journey
@@ -143,7 +140,7 @@ struct GalleryView: View {
                 .padding(.top, 18)
         }
         .padding(.horizontal, YTAMetrics.gutter)
-        .padding(.top, 26)
+        .padding(.top, 52)
     }
 
     // MARK: Filmstrip

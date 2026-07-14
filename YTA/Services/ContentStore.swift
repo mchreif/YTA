@@ -151,17 +151,6 @@ final class ContentStore {
         GalleryPhoto(id: "yam8", number: "06", title: "Natural Reserve", imageName: "gallery-yam8", season: .summer, storyProgramID: "p4")
     ]
 
-    /// The season hero image for the Explore scene header
-    /// (river = summer, reflections = autumn, ice = winter — the site's
-    /// own photographs of the same valley through the year).
-    func seasonHero(for season: ValleySeason) -> GalleryPhoto {
-        switch season {
-        case .summer: galleryPhotos[0]
-        case .autumn: galleryPhotos[3]
-        case .winter: galleryPhotos[2]
-        }
-    }
-
     /// Resolves the official mission program that narrates a scene.
     func program(withID id: String) -> Program? {
         programs.first { $0.id == id }
@@ -174,21 +163,6 @@ final class ContentStore {
             $0.id != photo.id && ($0.storyProgramID == photo.storyProgramID || $0.season == photo.season)
         }
     }
-
-    // MARK: Media
-
-    /// Instagram posts, mirroring `assets/js/yta-instagram-feed.js`.
-    let instagramPosts: [InstagramPost] = [
-        InstagramPost(id: "DPjpuidDMbP", kind: .post, likes: 186, comments: 14, views: nil),
-        InstagramPost(id: "DPhwFubDHf-", kind: .post, likes: 142, comments: 9, views: nil),
-        InstagramPost(id: "DPhumj3DCiw", kind: .post, likes: 203, comments: 18, views: nil),
-        InstagramPost(id: "DPhucS2jHwT", kind: .post, likes: 97, comments: 6, views: nil),
-        InstagramPost(id: "DPgQq3ODEJY", kind: .post, likes: 264, comments: 22, views: nil),
-        InstagramPost(id: "DPR8ZQTjGo8", kind: .post, likes: 118, comments: 11, views: nil),
-        InstagramPost(id: "DOr4pVDiDNb", kind: .post, likes: 175, comments: 13, views: nil),
-        InstagramPost(id: "DOfv8GRDPl6", kind: .reel, likes: 312, comments: 27, views: 4820),
-        InstagramPost(id: "DOebvbTDBP0", kind: .post, likes: 89, comments: 5, views: nil)
-    ]
 
     // MARK: Press
 

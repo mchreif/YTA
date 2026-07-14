@@ -1,5 +1,29 @@
 # Release manifest — "Cinema of the Valley" redesign
 
+## Wave 1.3 — client revisions (approved header artwork + removals)
+
+**Added**
+
+| File | Change |
+|---|---|
+| `YTA/Views/Components/YammounehHeroTransition.swift` | Reusable cinematic hero: parallax (image travels slower, stretches on overscroll), departure scrim, and a layered dissolve whose final stop is the exact section background token — no seam, no straight edge. Includes `JourneyAtmosphere` (faint gold haze + subtle tonal drift). Reduce Motion keeps the dissolve, drops all movement |
+| `YTA/Assets.xcassets/yammouneh-header.imageset` | Client-approved Explore hero artwork (title embedded — not duplicated in SwiftUI) |
+| `YTA/Assets.xcassets/community-header.imageset` | Client-approved Community header artwork (text embedded) |
+
+**Changed**
+
+| File | Change |
+|---|---|
+| `YTA/Theme/YTATheme.swift` | New shared token `ytaJourneyBackground` (#161C2E — sampled from the artwork's bottom edge); used by both the hero fade and the journey background |
+| `YTA/Views/Gallery/GalleryView.swift` | Hero replaced by `YammounehHeroTransition` + scroll-linked parallax; refined floating season selector hangs into the transition zone; journey ground uses the shared token with `JourneyAtmosphere` |
+| `YTA/Views/Community/CommunityView.swift` | Header is the approved artwork; segment control hangs into its teal wave |
+| `YTA/Views/Connect/ConnectView.swift` | Banner rebuilt as a full-width hero dissolving into the screen background |
+| `YTA/App/RootView.swift` | Media tab → Press (icon + title); shows PressView |
+| `YTA/Views/Home/HeroSection.swift` · `YTA/Services/VideoLibrary.swift` | Welcome avatar removed |
+| `YTA/Services/ContentStore.swift` · `YTA/Services/ExternalLinks.swift` | Instagram content removed (profile link kept in Connect) |
+
+**Removed** — `WelcomeAvatar.swift`, `welcome-avatar.imageset`, `welcome-message.mp4`, `MediaView.swift`, `MediaHubView.swift`, `MediaViewModel.swift`, `InstagramPost.swift`
+
 ## Wave 1.2 — splash seam + real video keying + audio fix
 
 | File | Change |

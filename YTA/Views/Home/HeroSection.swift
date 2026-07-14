@@ -53,15 +53,8 @@ struct HeroSection: View {
 
                 Spacer()
 
-                // Bottom block: welcome avatar, eyebrow, organization
-                // name and actions — mirroring the website's hero stack.
+                // Bottom block: eyebrow, organization name and actions.
                 VStack(spacing: 12) {
-                    HStack {
-                        Spacer()
-                        WelcomeAvatar()
-                    }
-                    .padding(.trailing, 6)
-
                     Text(content.heroEyebrow)
                         .font(YTAFont.semibold(11, relativeTo: .caption))
                         .kerning(2.5)
