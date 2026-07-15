@@ -18,13 +18,18 @@ YTA/
 │   ├── Splash/         SplashView + AnimatedMeshBackground (iOS 18 MeshGradient)
 │   ├── Home/           HomeView — full-screen vertical pager (hero / mission / impact / board
 │   │                   pages with snap paging + tappable page indicator, alerts bell)
-│   ├── Gallery/        GalleryView + PhotoLightbox
-│   ├── Community/      CommunityView — AlertCard + PollCard (animated results)
-│   ├── Media/          MediaHubView (channel switcher), MediaView, PressView (in Press/)
-│   ├── Press/          PressView + NewsArticleCard
+│   ├── Gallery/        GalleryView — the "Explore" journey (seasonal scene header,
+│   │                   gold route-line, filmstrip) + AttractionDetailView (iOS 18
+│   │                   zoom transition, Ken Burns hero, official story, related
+│   │                   scenes) + PhotoLightbox
+│   ├── Community/      CommunityView — approved header artwork, AlertCard + PollCard
+│   ├── Press/          PressView + NewsArticleCard (the Press tab)
 │   ├── Connect/        ConnectView + ContactChip
-│   └── Components/     SectionHeader, button styles, CountUpText, TickerView, ConfettiBurst,
-│                       LoopingVideoView, VideoPlayerSheet, SafariView
+│   └── Components/     SceneComponents (SceneTitle, KenBurnsImage, SceneScrim,
+│                       AwaitingDataCard, RouteConnector — the "Cinema of the Valley"
+│                       design language), SectionHeader, button styles, CountUpText,
+│                       TickerView, ConfettiBurst, LoopingVideoView, VideoPlayerSheet,
+│                       SafariView
 ├── Managers/           HapticsManager, NotificationManager, CommunityBackgroundRefresh
 ├── Extensions/         Color+Hex (incl. dynamic light/dark colors)
 ├── Resources/          Videos (5 × MP4), Fonts (Outfit ×4, Fraunces ×4),
@@ -67,8 +72,7 @@ The website itself is fully static — no API calls anywhere in its source (the 
 ### Integration point 1 — content API
 If YTA publishes a content API, convert `ContentStore`'s stored properties to `private(set) var`, add an `async func refresh()` that decodes into the existing models (they are already `Sendable` value types shaped for `Codable` conformance), and call it from `.task` in `RootView`. All screens update automatically through Observation.
 
-### Integration point 2 — Instagram Graph API
-`InstagramPost` carries the shortcode, kind and engagement stats the website hardcodes. To show real thumbnails and live counts, exchange a long-lived Instagram Graph API token server-side and replace the static array in `ContentStore.instagramPosts`. `MediaView` renders whatever the store provides; card artwork is the only view code that would change (swap the branded gradient for `AsyncImage`).
+*(A former Instagram-feed integration point was removed with the Instagram section, at the association's request in July 2026. The Instagram profile remains linked from Connect.)*
 
 ## Design-fidelity decisions
 

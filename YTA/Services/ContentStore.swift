@@ -8,10 +8,11 @@ import Observation
 /// `index.html` / `yta-instagram-feed.js` — so the native app bundles the
 /// same content and works fully offline.
 ///
-/// **Integration point:** if YTA later exposes a content API, replace the
-/// stored properties below with `async` loads inside `refresh()` and the
-/// UI will update automatically through Observation. The models are
-/// already `Sendable` and decodable-shaped for that purpose.
+/// **Integration point:** if YTA later exposes a content API (or the
+/// Instagram Graph API is connected), replace the stored properties below
+/// with `async` loads inside `refresh()` and the UI will update automatically
+/// through Observation. The models are already `Sendable` and decodable-shaped
+/// for that purpose.
 @MainActor
 @Observable
 final class ContentStore {

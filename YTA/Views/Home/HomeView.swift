@@ -16,6 +16,10 @@ struct HomeView: View {
     /// switching to the Community tab's alerts feed.
     let onOpenAlerts: () -> Void
 
+    /// Invoked by the closing "Plan your visit" banner,
+    /// switching to the Connect tab.
+    let onPlanVisit: () -> Void
+
     @Environment(ContentStore.self) private var content
     @Environment(CommunityStore.self) private var community
     @State private var viewModel = HomeViewModel()
@@ -41,7 +45,7 @@ struct HomeView: View {
                     .containerRelativeFrame(.vertical)
                     .id(HomePage.impact)
 
-                    BoardSection()
+                    BoardSection(onPlanVisit: onPlanVisit)
                         .containerRelativeFrame(.vertical)
                         .background(Color.ytaBackground)
                         .id(HomePage.board)
@@ -187,7 +191,7 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(onExplore: {}, onOpenAlerts: {})
+    HomeView(onExplore: {}, onOpenAlerts: {}, onPlanVisit: {})
         .environment(ContentStore())
         .environment(CommunityStore())
 }

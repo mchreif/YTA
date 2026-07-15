@@ -1,8 +1,13 @@
 import SwiftUI
 
-/// The "03 · Board Members" full page — intro text and a snapping
-/// horizontal rail of large member cards, centered on screen.
+/// The board full page — intro text, a snapping horizontal rail of
+/// member cards, and the Plan-Your-Visit banner that closes the
+/// Home journey.
 struct BoardSection: View {
+
+    /// Switches to the Connect tab (the approved Home flow ends on a
+    /// "Plan your visit" entry point).
+    let onPlanVisit: () -> Void
 
     @Environment(ContentStore.self) private var content
 
@@ -10,10 +15,9 @@ struct BoardSection: View {
         VStack(spacing: 18) {
             Spacer(minLength: 58)
 
-            SectionHeader(
-                number: "03",
-                title: "Board Members",
-                subtitle: "Leadership & Governance"
+            SceneTitle(
+                eyebrow: "Board Members",
+                title: "Leadership & Governance"
             )
             .padding(.horizontal, YTAMetrics.gutter)
 
@@ -42,8 +46,47 @@ struct BoardSection: View {
             .scrollTargetBehavior(.viewAligned)
             .scrollIndicators(.hidden)
 
+            planVisitBanner
+                .padding(.horizontal, YTAMetrics.gutter)
+
             Spacer(minLength: 20)
         }
+    }
+
+    /// The Home journey's closing action, using the site's own visit copy.
+    private var planVisitBanner: some View {
+        Button {
+            HapticsManager.impact()
+            onPlanVisit()
+        } label: {
+            HStack(spacing: 14) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Plan Your Visit")
+                        .font(YTAFont.displayRegular(19, relativeTo: .title3))
+                        .foregroundStyle(.white)
+                    Text("Routes, guided tours, festival dates — 24h typical response")
+                        .font(YTAFont.body(12, relativeTo: .caption))
+                        .foregroundStyle(.white.opacity(0.75))
+                        .multilineTextAlignment(.leading)
+                }
+                Spacer()
+                Image(systemName: "arrow.right")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(Color.ytaGold)
+            }
+            .padding(18)
+            .background(
+                LinearGradient(
+                    colors: [Color(hex: 0x14532D), Color.ytaNavy],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
+                in: RoundedRectangle(cornerRadius: YTAMetrics.radius, style: .continuous)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Plan your visit")
+        .accessibilityHint("Opens the Connect tab")
     }
 }
 
@@ -93,7 +136,7 @@ private struct BoardMemberCard: View {
 }
 
 #Preview {
-    BoardSection()
+    BoardSection(onPlanVisit: {})
         .frame(height: 700)
         .background(Color.ytaBackground)
         .environment(ContentStore())

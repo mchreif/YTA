@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// They mirror the website's navigation with one native addition:
 /// Mission, Impact and Board share the Home tab (as they share the
-/// website's landing page); Instagram and Press share the Media tab;
+/// website's landing page); the Press tab carries the media coverage;
 /// Community hosts the app-exclusive alerts and polls.
 enum AppTab: String, CaseIterable, Identifiable {
     case home
@@ -21,7 +21,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         case .home:      "Home"
         case .yammouneh: "Yammouneh"
         case .community: "Community"
-        case .media:     "Media"
+        case .media:     "Press"
         case .connect:   "Connect"
         }
     }
@@ -32,7 +32,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         case .home:      "house.fill"
         case .yammouneh: "photo.on.rectangle.angled"
         case .community: "megaphone.fill"
-        case .media:     "play.rectangle.on.rectangle.fill"
+        case .media:     "newspaper.fill"
         case .connect:   "location.circle.fill"
         }
     }
@@ -93,7 +93,8 @@ struct RootView: View {
                     onOpenAlerts: {
                         community.requestedSegment = .alerts
                         selection = .community
-                    }
+                    },
+                    onPlanVisit: { selection = .connect }
                 )
             }
             Tab(AppTab.yammouneh.title, systemImage: AppTab.yammouneh.systemImage, value: AppTab.yammouneh) {
@@ -104,7 +105,7 @@ struct RootView: View {
             }
             .badge(community.unreadAlertCount)
             Tab(AppTab.media.title, systemImage: AppTab.media.systemImage, value: AppTab.media) {
-                MediaHubView()
+                PressView()
             }
             Tab(AppTab.connect.title, systemImage: AppTab.connect.systemImage, value: AppTab.connect) {
                 ConnectView()

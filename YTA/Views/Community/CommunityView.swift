@@ -12,15 +12,22 @@ struct CommunityView: View {
 
         ZStack {
             ScrollView {
-                VStack(spacing: 20) {
-                    header
+                VStack(spacing: 18) {
+                    // Approved header artwork (title and subtitle embedded)
+                    // with the segment control hanging into its teal wave.
+                    ZStack(alignment: .bottom) {
+                        header
 
-                    Picker("Section", selection: $viewModel.segment) {
-                        Text("Alerts").tag(CommunityStore.Segment.alerts)
-                        Text("Polls").tag(CommunityStore.Segment.polls)
+                        Picker("Section", selection: $viewModel.segment) {
+                            Text("Alerts").tag(CommunityStore.Segment.alerts)
+                            Text("Polls").tag(CommunityStore.Segment.polls)
+                        }
+                        .pickerStyle(.segmented)
+                        .frame(maxWidth: 320)
+                        .padding(.horizontal, YTAMetrics.gutter * 2)
+                        .offset(y: 18)
                     }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal, YTAMetrics.gutter)
+                    .padding(.bottom, 18)
 
                     syncStatus
 
@@ -51,35 +58,19 @@ struct CommunityView: View {
         }
     }
 
-    /// Compact brand banner over the animated mesh.
+    /// The approved Community header artwork — title, subtitle and the
+    /// teal wave are part of the image, so nothing is drawn over it.
+    /// Clipped just inside its baked corners so no white fringe shows.
     private var header: some View {
-        ZStack {
-            AnimatedMeshBackground()
-                .frame(height: 148)
-                .clipShape(RoundedRectangle(cornerRadius: YTAMetrics.radius, style: .continuous))
-
-            VStack(spacing: 6) {
-                Image("logo-ngo")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 52, height: 52)
-                    .clipShape(Circle())
-                    .overlay(Circle().strokeBorder(.white.opacity(0.8), lineWidth: 2))
-
-                Text("Community")
-                    .font(YTAFont.bold(21, relativeTo: .title2))
-                    .textCase(.uppercase)
-                    .kerning(2)
-                    .foregroundStyle(.white)
-
-                Text("Alerts & project votes from YTA")
-                    .font(YTAFont.body(12, relativeTo: .caption))
-                    .foregroundStyle(.white.opacity(0.75))
-            }
-        }
-        .padding(.horizontal, YTAMetrics.gutter)
-        .padding(.top, 12)
-        .accessibilityElement(children: .combine)
+        Image("community-header")
+            .resizable()
+            .scaledToFit()
+            .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+            .shadow(color: .black.opacity(0.14), radius: 14, y: 6)
+            .padding(.horizontal, YTAMetrics.gutter)
+            .padding(.top, 10)
+            .accessibilityLabel("Community — alerts and project updates from YTA")
+            .accessibilityAddTraits(.isHeader)
     }
 
     /// One-line freshness indicator under the segment picker.

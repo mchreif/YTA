@@ -231,6 +231,66 @@
         "ar" : { "stringUnit" : { "state" : "translated", "value" : "%lld صوتًا" } }
       }
     },
+    "Summer" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الصيف" } }
+      }
+    },
+    "Autumn" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الخريف" } }
+      }
+    },
+    "Winter" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الشتاء" } }
+      }
+    },
+    "What YTA does" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "ماذا تفعل الجمعية" } }
+      }
+    },
+    "The mission" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "مهمتنا" } }
+      }
+    },
+    "Ask a guide" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "اسأل مرشدًا" } }
+      }
+    },
+    "Related scenes" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "مشاهد ذات صلة" } }
+      }
+    },
+    "The valley in six frames" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الوادي في ستة مشاهد" } }
+      }
+    },
+    "A thematic journey — scenes, not GPS points." : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "رحلة موضوعية — مشاهد وليست نقاط إحداثيات." } }
+      }
+    },
+    "Next edition — date to be announced" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "الدورة القادمة — الموعد يُعلن لاحقًا" } }
+      }
+    },
+    "Awaiting official announcement" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "بانتظار الإعلان الرسمي" } }
+      }
+    },
+    "Routes, guided tours, festival dates — 24h typical response" : {
+      "localizations" : {
+        "ar" : { "stringUnit" : { "state" : "translated", "value" : "طرقات وجولات مرشدة ومواعيد المهرجانات — الرد عادة خلال ٢٤ ساعة" } }
+      }
+    },
     "Overview" : {
       "localizations" : {
         "ar" : { "stringUnit" : { "state" : "translated", "value" : "نظرة عامة" } }

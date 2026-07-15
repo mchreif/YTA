@@ -35,11 +35,12 @@ struct SplashView: View {
                         }
                     }
 
-                    Image("logo-ngo")
+                    // Pre-composed asset: the full official logo fitted
+                    // on a pure-white circle — seamless, never cropped.
+                    Image("splash-logo")
                         .resizable()
-                        .scaledToFill()
-                        .frame(width: 148, height: 148)
-                        .clipShape(Circle())
+                        .scaledToFit()
+                        .frame(width: 150, height: 150)
                         .overlay(Circle().strokeBorder(.white.opacity(0.85), lineWidth: 3))
                         .shadow(color: .black.opacity(0.35), radius: 24, y: 10)
                         .scaleEffect(logoVisible ? 1 : 0.55)

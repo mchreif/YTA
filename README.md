@@ -6,9 +6,9 @@ The official app of the **Yammouneh Tourism Association (YTA)**, a community-led
 
 - **Animated splash intro** — the YTA logo over a living `MeshGradient`, auto-dismisses into the app
 - **Home** — four full-screen pages with vertical snap paging: full-bleed hero video → 01 Mission (six program cards, 2018/2019/2023 festival videos) → 02 Impact (animated counters) → 03 Board
-- **Yammouneh** — photo gallery with a native lightbox (pinch zoom, paging, sharing)
+- **Yammouneh (Explore)** — the "Cinema of the Valley" journey: seasonal crossfading scene header (the site's own summer/autumn/winter photography), a gold route-line threading the six official scenes, attraction detail screens (iOS 18 zoom transition, slow push-in hero, official story text, directions/guide/share, related scenes), and the full-screen lightbox
 - **Community** — broadcast alerts and project polls fed live from ytalebanon.org, with offline caching, unread badges, quiet background notifications, and confetti-on-vote (see [`Server/ADMIN-GUIDE.md`](Server/ADMIN-GUIDE.md) for how the admin publishes content)
-- **Media** — Instagram carousel (@yta_leb) and Arabic press coverage in in-app Safari
+- **Press** — Arabic press coverage of YTA, opening in in-app Safari
 - **Connect** — call/email/directions, MapKit satellite map, share sheet
 
 Tech: SwiftUI, MVVM with Observation, async/await, MapKit, AVKit, BackgroundTasks, English + Arabic localization, light/dark mode, Dynamic Type, VoiceOver. **Minimum iOS: 18.0** (the app uses iOS 18 SwiftUI APIs: `MeshGradient`, the `Tab` builder, `onScrollVisibilityChange`, `onScrollGeometryChange`).

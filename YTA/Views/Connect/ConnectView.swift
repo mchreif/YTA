@@ -13,12 +13,7 @@ struct ConnectView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 26) {
-                SectionHeader(
-                    number: "07",
-                    title: "Connect",
-                    subtitle: "Visit Yammouneh · Partner with YTA"
-                )
-                .padding(.top, 24)
+                sceneBanner
 
                 Text(content.connectLead)
                     .font(YTAFont.body(15, relativeTo: .subheadline))
@@ -45,7 +40,39 @@ struct ConnectView: View {
             )
             .ignoresSafeArea()
         )
+        .ignoresSafeArea(edges: .top)
         .scrollIndicators(.hidden)
+    }
+
+    // MARK: Scene banner
+
+    /// Cinematic opener for the visit screen — the reserve photograph
+    /// (site gallery, official caption "Natural Reserve") as a full-width
+    /// hero dissolving into this screen's background, matching the
+    /// Explore transition language.
+    private var sceneBanner: some View {
+        YammounehHeroTransition(
+            imageName: "gallery-yam8",
+            height: 264,
+            fadeColor: .ytaBackground
+        ) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Visit Yammouneh · Partner with YTA")
+                    .font(YTAFont.semibold(10, relativeTo: .caption))
+                    .kerning(1.8)
+                    .textCase(.uppercase)
+                    .foregroundStyle(Color.ytaGold)
+                Text("Plan Your Visit")
+                    .font(YTAFont.display(30, relativeTo: .title))
+                    .foregroundStyle(.white)
+            }
+            .shadow(color: .black.opacity(0.55), radius: 6, y: 1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, YTAMetrics.gutter)
+            .padding(.bottom, 62)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
     }
 
     // MARK: Contact actions
