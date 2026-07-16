@@ -1,5 +1,15 @@
 # Release manifest — "Cinema of the Valley" redesign
 
+## Wave 1.7 — App Store readiness: privacy manifest
+
+**Added**
+
+| File | Change |
+|---|---|
+| `YTA/PrivacyInfo.xcprivacy` | Declares the app's use of `UserDefaults` (reason `CA92.1` — reading/writing only the app's own data, for alert-read tracking and poll votes) under Apple's required-reason API disclosure rules. No tracking, no data collection declared (the app has neither). Audited against the actual codebase: no file-timestamp, disk-space, or other required-reason APIs are used |
+
+**Why:** Apple requires a privacy manifest for apps that use certain "required reason" APIs; without one, App Store Connect can reject a submission at upload or during review. This was the one real gap found in an App Store readiness audit — everything else (single 1024×1024 App Store icon, `ITSAppUsesNonExemptEncryption` already set, no camera/photo/location APIs used) was already in order.
+
 ## Wave 1.6 — clean community photo + native title treatment
 
 **Changed**
