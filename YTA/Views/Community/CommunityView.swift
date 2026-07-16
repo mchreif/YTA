@@ -6,6 +6,9 @@ struct CommunityView: View {
 
     @Environment(CommunityStore.self) private var store
     @State private var viewModel = CommunityViewModel()
+    /// Scroll offset feeding the hero's parallax (0 at rest) — the same
+    /// cinematic treatment as the Explore journey's hero.
+    @State private var heroOffset: CGFloat = 0
 
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -13,11 +16,20 @@ struct CommunityView: View {
         ZStack {
             ScrollView {
                 VStack(spacing: 18) {
-                    // Approved header artwork (title and subtitle embedded)
-                    // with the segment control hanging into its teal wave.
-                    ZStack(alignment: .bottom) {
-                        header
-
+                    // Approved header artwork (title, subtitle and URL are
+                    // baked in) as a full-bleed cinematic hero dissolving
+                    // into the screen background — the segment control
+                    // hangs into the transition zone, exactly like the
+                    // Explore journey's season switcher.
+                    YammounehHeroTransition(
+                        imageName: "community-header",
+                        height: 450,
+                        fadeColor: .ytaBackground,
+                        scrollOffset: heroOffset
+                    ) {
+                        EmptyView()
+                    }
+                    .overlay(alignment: .bottom) {
                         Picker("Section", selection: $viewModel.segment) {
                             Text("Alerts").tag(CommunityStore.Segment.alerts)
                             Text("Polls").tag(CommunityStore.Segment.polls)
@@ -25,9 +37,12 @@ struct CommunityView: View {
                         .pickerStyle(.segmented)
                         .frame(maxWidth: 320)
                         .padding(.horizontal, YTAMetrics.gutter * 2)
-                        .offset(y: 18)
+                        .shadow(color: .black.opacity(0.18), radius: 10, y: 4)
+                        .offset(y: 22)
                     }
-                    .padding(.bottom, 18)
+                    .accessibilityLabel("Community — alerts and project updates from YTA")
+                    .accessibilityAddTraits(.isHeader)
+                    .padding(.bottom, 30)
 
                     syncStatus
 
@@ -44,7 +59,13 @@ struct CommunityView: View {
                 .animation(.spring(duration: 0.35), value: viewModel.segment)
             }
             .background(Color.ytaBackground)
+            .ignoresSafeArea(edges: .top)
             .scrollIndicators(.hidden)
+            .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                geometry.contentOffset.y + geometry.contentInsets.top
+            } action: { _, offset in
+                heroOffset = offset
+            }
             .refreshable { await store.refresh() }
 
             ConfettiBurst(trigger: viewModel.confettiTrigger)
@@ -56,21 +77,6 @@ struct CommunityView: View {
         .onChange(of: store.requestedSegment) { _, _ in
             viewModel.adoptRequestedSegment(from: store)
         }
-    }
-
-    /// The approved Community header artwork — title, subtitle and the
-    /// teal wave are part of the image, so nothing is drawn over it.
-    /// Clipped just inside its baked corners so no white fringe shows.
-    private var header: some View {
-        Image("community-header")
-            .resizable()
-            .scaledToFit()
-            .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-            .shadow(color: .black.opacity(0.14), radius: 14, y: 6)
-            .padding(.horizontal, YTAMetrics.gutter)
-            .padding(.top, 10)
-            .accessibilityLabel("Community — alerts and project updates from YTA")
-            .accessibilityAddTraits(.isHeader)
     }
 
     /// One-line freshness indicator under the segment picker.

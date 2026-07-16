@@ -1,5 +1,16 @@
 # Release manifest — "Cinema of the Valley" redesign
 
+## Wave 1.5 — Community hero matches the Explore treatment
+
+**Changed**
+
+| File | Change |
+|---|---|
+| `YTA/Assets.xcassets/community-header.imageset` | Replaced with the client-approved sunrise/hikers photo (title, URL and subtitle baked in); re-encoded from an 8.2 MB PNG to an 841 KB JPEG (same visual quality) |
+| `YTA/Views/Community/CommunityView.swift` | The header is no longer a static rounded card — it's now `YammounehHeroTransition`, the exact same full-bleed cinematic component used by the Explore journey: scroll-linked parallax, slow push-in, and a layered dissolve into the screen's own `.ytaBackground` (no seam, no straight edge). The Alerts/Polls segment control now hangs into the fade zone the same way the Explore journey's season switcher does |
+
+**Why:** the Community header previously sat in a separate rounded card below the status bar, breaking the cinematic language established for Explore. It now opens exactly like Explore does — full width, extending under the status bar, motion and all.
+
 ## Wave 1.4 — live news feed + contact number update
 
 **Added**
