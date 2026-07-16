@@ -16,18 +16,33 @@ struct CommunityView: View {
         ZStack {
             ScrollView {
                 VStack(spacing: 18) {
-                    // Approved header artwork (title, subtitle and URL are
-                    // baked in) as a full-bleed cinematic hero dissolving
-                    // into the screen background — the segment control
-                    // hangs into the transition zone, exactly like the
-                    // Explore journey's season switcher.
+                    // Full-bleed cinematic hero dissolving into the screen
+                    // background, in the same visual language as the
+                    // Explore journey's title: a gold uppercase eyebrow
+                    // over a large serif display title. The segment
+                    // control hangs into the transition zone below, like
+                    // Explore's season switcher.
                     YammounehHeroTransition(
                         imageName: "community-header",
                         height: 450,
                         fadeColor: .ytaBackground,
                         scrollOffset: heroOffset
                     ) {
-                        EmptyView()
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Alerts & Project Updates")
+                                .font(YTAFont.semibold(10, relativeTo: .caption))
+                                .kerning(2.2)
+                                .textCase(.uppercase)
+                                .foregroundStyle(Color.ytaGold)
+
+                            Text("Community")
+                                .font(YTAFont.display(38, relativeTo: .largeTitle))
+                                .foregroundStyle(.white)
+                        }
+                        .shadow(color: .black.opacity(0.55), radius: 8, y: 2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, YTAMetrics.gutter)
+                        .padding(.bottom, 50)
                     }
                     .overlay(alignment: .bottom) {
                         Picker("Section", selection: $viewModel.segment) {
@@ -40,7 +55,7 @@ struct CommunityView: View {
                         .shadow(color: .black.opacity(0.18), radius: 10, y: 4)
                         .offset(y: 22)
                     }
-                    .accessibilityLabel("Community — alerts and project updates from YTA")
+                    .accessibilityElement(children: .combine)
                     .accessibilityAddTraits(.isHeader)
                     .padding(.bottom, 30)
 

@@ -1,5 +1,14 @@
 # Release manifest — "Cinema of the Valley" redesign
 
+## Wave 1.6 — clean community photo + native title treatment
+
+**Changed**
+
+| File | Change |
+|---|---|
+| `YTA/Assets.xcassets/community-header.imageset` | Replaced with the text-free version of the same sunrise/hikers photo (client asked for the title to be drawn natively instead of baked into the artwork) |
+| `YTA/Views/Community/CommunityView.swift` | The hero now draws its own title — a gold uppercase eyebrow ("Alerts & Project Updates") over a large serif display title ("Community") — using the exact same font sizes, kerning and drop-shadow treatment as the Explore journey's original title block |
+
 ## Wave 1.5 — Community hero matches the Explore treatment
 
 **Changed**
