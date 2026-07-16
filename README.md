@@ -8,7 +8,7 @@ The official app of the **Yammouneh Tourism Association (YTA)**, a community-led
 - **Home** — four full-screen pages with vertical snap paging: full-bleed hero video → 01 Mission (six program cards, 2018/2019/2023 festival videos) → 02 Impact (animated counters) → 03 Board
 - **Yammouneh (Explore)** — the "Cinema of the Valley" journey: seasonal crossfading scene header (the site's own summer/autumn/winter photography), a gold route-line threading the six official scenes, attraction detail screens (iOS 18 zoom transition, slow push-in hero, official story text, directions/guide/share, related scenes), and the full-screen lightbox
 - **Community** — broadcast alerts and project polls fed live from ytalebanon.org, with offline caching, unread badges, quiet background notifications, and confetti-on-vote (see [`Server/ADMIN-GUIDE.md`](Server/ADMIN-GUIDE.md) for how the admin publishes content)
-- **Press** — Arabic press coverage of YTA, opening in in-app Safari
+- **Press** — Arabic press coverage of YTA, fed live from ytalebanon.org (so YTA can publish a new article without an app update — see `Server/ADMIN-GUIDE.md`), opening in in-app Safari
 - **Connect** — call/email/directions, MapKit satellite map, share sheet
 
 Tech: SwiftUI, MVVM with Observation, async/await, MapKit, AVKit, BackgroundTasks, English + Arabic localization, light/dark mode, Dynamic Type, VoiceOver. **Minimum iOS: 18.0** (the app uses iOS 18 SwiftUI APIs: `MeshGradient`, the `Tab` builder, `onScrollVisibilityChange`, `onScrollGeometryChange`).
@@ -87,4 +87,4 @@ Running in the simulator requires **no Apple Developer account and no signing**.
 | App Store release | Apple Developer Program + App Store review |
 | Instant push notifications | Developer Program (APNs key) — see `Server/ADMIN-GUIDE.md`; background-refresh notifications already work without it |
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for the technical deep-dive and the documented integration points (community feed endpoints, Instagram Graph API).
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the technical deep-dive and the documented live-feed endpoints (alerts, polls, news).

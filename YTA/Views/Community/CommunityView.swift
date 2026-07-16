@@ -74,25 +74,12 @@ struct CommunityView: View {
     }
 
     /// One-line freshness indicator under the segment picker.
-    @ViewBuilder
     private var syncStatus: some View {
-        if store.isRefreshing {
-            Label("Checking for updates…", systemImage: "arrow.triangle.2.circlepath")
-                .font(YTAFont.body(12, relativeTo: .caption))
-                .foregroundStyle(Color.ytaTextSecondary)
-        } else if store.isShowingCachedContent {
-            Label("Offline — showing saved content", systemImage: "wifi.slash")
-                .font(YTAFont.body(12, relativeTo: .caption))
-                .foregroundStyle(Color.ytaTextSecondary)
-        } else if let synced = store.lastSyncedAt {
-            Label {
-                Text("Updated \(synced, format: .relative(presentation: .named))")
-            } icon: {
-                Image(systemName: "checkmark.circle")
-            }
-            .font(YTAFont.body(12, relativeTo: .caption))
-            .foregroundStyle(Color.ytaTextSecondary)
-        }
+        SyncStatusLabel(
+            isRefreshing: store.isRefreshing,
+            isShowingCachedContent: store.isShowingCachedContent,
+            lastSyncedAt: store.lastSyncedAt
+        )
     }
 }
 

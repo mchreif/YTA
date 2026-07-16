@@ -1,6 +1,7 @@
 import Foundation
 
-/// Networking client for the community feed (alerts and polls).
+/// Networking client for the association's live content feed: alerts,
+/// polls, and press articles.
 ///
 /// The feed is a set of static JSON files plus one small PHP endpoint,
 /// designed so it can live on the association's existing web hosting —
@@ -10,6 +11,7 @@ import Foundation
 /// - `GET  /app/polls.php`   → `[Poll]` with live tallies (falls back to
 ///   `polls.json` while the PHP endpoint isn't uploaded yet)
 /// - `POST /app/vote.php`    → records a vote, returns the updated `Poll`
+/// - `GET  /app/news.json`   → `[NewsArticle]`
 struct CommunityAPI: Sendable {
 
     /// Errors surfaced to the store.
@@ -52,6 +54,12 @@ struct CommunityAPI: Sendable {
         } catch {
             return try await get("polls.json")
         }
+    }
+
+    /// Fetches all published press articles, newest first (the order
+    /// YTA lists them in `news.json`).
+    func fetchNews() async throws -> [NewsArticle] {
+        try await get("news.json")
     }
 
     /// Submits one vote and returns the poll with updated tallies when the

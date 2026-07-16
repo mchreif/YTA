@@ -1,5 +1,30 @@
 # Release manifest — "Cinema of the Valley" redesign
 
+## Wave 1.4 — live news feed + contact number update
+
+**Added**
+
+| File | Change |
+|---|---|
+| `YTA/Services/NewsStore.swift` | Press-tab state store mirroring `CommunityStore`'s pattern: remote fetch → disk cache → bundled seed, with `isRefreshing`/`isShowingCachedContent`/`lastSyncedAt` |
+| `YTA/Views/Components/SyncStatusLabel.swift` | Freshness indicator extracted from `CommunityView` so Community and Press share one implementation |
+| `YTA/Resources/Seed/news-seed.json` | The six launch articles, moved out of Swift source into bundled seed JSON (same role as `alerts-seed.json`/`polls-seed.json`) |
+| `Server/app/news.json` | Ready-to-upload live news feed — mirrors the seed content, with `imageURL` pointing at the site's existing `assets/images/news/newsN.png` photos |
+
+**Changed**
+
+| File | Change |
+|---|---|
+| `YTA/Models/NewsArticle.swift` | Now `Codable`; dropped the hand-maintained `number` field (the Press tab computes display order from the article's position in the feed); `imageName` became optional and `imageURL: URL?` was added, so an article published later can use a remote photo — or none, falling back to a branded text-only card instead of a broken image |
+| `YTA/Services/CommunityAPI.swift` | Added `fetchNews()` → `GET /app/news.json`; doc comment broadened from "community feed" to the association's full live content feed |
+| `YTA/Services/ContentStore.swift` | Removed `newsArticles` (now owned by `NewsStore`); `pressIntro` (static framing copy) stays; contact phone number updated to **+961 3 871 077** |
+| `YTA/Views/Press/PressView.swift` | Reads `NewsStore` instead of `ContentStore`; added pull-to-refresh, `SyncStatusLabel`, and image-fallback logic (bundled → remote → text-only) |
+| `YTA/Views/Community/CommunityView.swift` | Its inline `syncStatus` replaced by the shared `SyncStatusLabel` |
+| `YTA/App/YTAApp.swift` · `YTA/App/RootView.swift` | `NewsStore` created once and injected via `.environment(...)`, alongside `ContentStore`/`CommunityStore` |
+| `Server/ADMIN-GUIDE.md` | Added "Publishing a news article" section; retitled to cover Alerts, Polls **and News** |
+
+**Why:** the Press tab's six articles were hardcoded in `ContentStore` and compiled into the app binary — publishing a new one required a code change, a rebuild, and an App Store update. This wave gives YTA the same self-serve workflow already proven for alerts and polls: edit one JSON file on their own hosting, no developer and no app update needed.
+
 ## Wave 1.3 — client revisions (approved header artwork + removals)
 
 **Added**

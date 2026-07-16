@@ -166,66 +166,17 @@ final class ContentStore {
 
     // MARK: Press
 
+    /// Official framing copy; the articles themselves are fed live from
+    /// ytalebanon.org — see `NewsStore`.
     let pressIntro = "Regional and international press coverage of YTA festivals, heritage initiatives, and Yammouneh's growing tourism profile."
-
-    let newsArticles: [NewsArticle] = [
-        NewsArticle(
-            id: "n1",
-            number: "01",
-            title: "مهرجانات اليمونة السياحية",
-            summary: "مهرجانات اليمونة: إضاءة شمعة وسط الظلمة … نجاح غير متوقع.",
-            imageName: "news-1",
-            url: URL(string: "https://dzair-tube.dz/%D9%85%D9%87%D8%B1%D8%AC%D8%A7%D9%86%D8%A7%D8%AA-%D8%A7%D9%84%D9%8A%D9%85%D9%88%D9%86%D8%A9-%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%AD%D9%8A%D8%A9-%D8%A5%D8%B6%D8%A7%D8%A1%D8%A9-%D8%B4%D9%85%D8%B9%D8%A9/")!
-        ),
-        NewsArticle(
-            id: "n2",
-            number: "02",
-            title: "مهرجانات اليمونة لصيف 2019",
-            summary: "الأصوات الجميلة والطبيعة الخلابة اجتمعت في اليمونة",
-            imageName: "news-2",
-            url: URL(string: "https://www.musicnation.me/news/%D8%A7%D9%84%D8%A3%D8%B5%D9%88%D8%A7%D8%AA-%D8%A7%D9%84%D8%AC%D9%85%D9%8A%D9%84%D8%A9-%D9%88%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%D8%B9%D8%A9-%D8%A7%D9%84%D8%AE%D9%84%D8%A7%D8%A8%D8%A9-%D8%AA%D8%B9%D8%B1/")!
-        ),
-        NewsArticle(
-            id: "n3",
-            number: "03",
-            title: "اليمّونة تنتصر للموسيقى",
-            summary: "اليمونة تقيم المهرجان رغم التهديدات ومحاولات المنع",
-            imageName: "news-3",
-            url: URL(string: "https://www.annahar.com/arabic/section/77-%D9%85%D8%AC%D8%AA%D9%85%D8%B9/272744/%D8%A7%D9%84%D9%8A%D9%85%D9%88%D9%86%D8%A9-%D8%AA%D9%86%D8%AA%D8%B5%D8%B1-%D9%84%D9%84%D9%85%D9%88%D8%B3%D9%8A%D9%82%D9%89-%D8%B1%D8%BA%D9%85-%D8%A7%D9%84%D8%AA%D9%87%D8%AF%D9%8A%D8%AF-%D8%A5%D9%82%D8%A7%D9%85%D8%A9-%D9%85%D9%87%D8%B1%D8%AC%D8%A7%D9%86-%D8%A7%D9%84%D8%A8%D9%84%D8%AF%D8%A9-%D8%B1%D8%BA%D9%85-%D9%85%D8%AD%D8%A7%D9%88%D9%84%D8%A7%D8%AA-%D9%85%D9%86%D8%B9%D9%87")!
-        ),
-        NewsArticle(
-            id: "n4",
-            number: "04",
-            title: "مهرجانات اليمونة 2023",
-            summary: "مهرجانانة اليمونة تحتضن أشهر النجوم في أمسية من العمر",
-            imageName: "news-4",
-            url: URL(string: "https://www.musicnation.me/news/%D9%85%D9%87%D8%B1%D8%AC%D8%A7%D9%86%D8%A7%D8%AA-%D8%A7%D9%84%D9%8A%D9%85%D9%88%D9%86%D8%A9-%D8%AA%D8%AD%D8%AA%D8%B6%D9%86-%D8%A3%D8%B4%D9%87%D8%B1-%D8%A7%D9%84%D9%86%D8%AC%D9%88%D9%85-%D9%81%D9%8A-%D8%A3%D9%85%D8%B3%D9%8A%D8%A9-%D9%85%D9%86-%D8%A7%D9%84%D8%B9%D9%85%D8%B1/")!
-        ),
-        NewsArticle(
-            id: "n5",
-            number: "05",
-            title: "اليمونة دار عبادة ومحطة أثرية مهمة ومصيف للأباطرة",
-            summary: "محمية استثنائية تتوسّط خريطة لبنان الجغرافية (صور وفيديو)",
-            imageName: "news-5",
-            url: URL(string: "https://www.annahar.com/arabic/section/77-%D9%85%D8%AC%D8%AA%D9%85%D8%B9/08082022103753840")!
-        ),
-        NewsArticle(
-            id: "n6",
-            number: "06",
-            title: "جوهرة البقاع",
-            summary: "اليمونة وجهة متجدّدة لجميع أبناء الوطن",
-            imageName: "news-6",
-            url: URL(string: "https://www.youtube.com/watch?v=_AYyqdM6Wpg")!
-        )
-    ]
 
     // MARK: Connect
 
     let connectLead = "Whether you are planning a visit, exploring partnership opportunities, or covering our festivals — our team is ready to welcome you to Yammouneh."
 
     let contact = ContactInfo(
-        phoneDisplay: "+961 3 65 69 65",
-        phoneURL: URL(string: "tel:+9613656965")!,
+        phoneDisplay: "+961 3 871 077",
+        phoneURL: URL(string: "tel:+9613871077")!,
         email: "info@ytalebanon.org",
         emailURL: URL(string: "mailto:info@ytalebanon.org")!,
         tripGuideURL: URL(string: "mailto:info@ytalebanon.org?subject=Visit%20Yammouneh")!,

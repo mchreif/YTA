@@ -1,6 +1,6 @@
-# YTA App — Admin Guide (Alerts & Polls)
+# YTA App — Admin Guide (Alerts, Polls & News)
 
-The app reads its community content from **your existing website hosting** — no new servers, no accounts, no monthly costs. You publish content by editing two small text files.
+The app reads its live content from **your existing website hosting** — no new servers, no accounts, no monthly costs. You publish content by editing small text files.
 
 ## One-time setup (5 minutes)
 
@@ -11,6 +11,7 @@ The app reads its community content from **your existing website hosting** — n
    - `polls.json` — the polls feed
    - `polls.php` — returns polls with live vote tallies
    - `vote.php` — records votes from the app
+   - `news.json` — the Press tab's article feed
 4. Verify: open `https://ytalebanon.org/app/alerts.json` in a browser — you should see the JSON.
 
 That's it. The app checks these files on every launch, on pull-to-refresh, and periodically in the background.
@@ -59,10 +60,33 @@ Edit `app/polls.json` and add:
 - Start `votes` at `0`; `vote.php` adds real votes on top in `votes.json` (created automatically — don't edit it).
 - To see results: open `https://ytalebanon.org/app/polls.php` in a browser.
 
+## Publishing a news article
+
+Edit `app/news.json` and add a new entry **at the top** (newest article first — the Press tab shows them in file order and numbers them automatically):
+
+```json
+{
+  "id": "n7",
+  "title": "عنوان المقال بالعربية",
+  "summary": "ملخص قصير للمقال بالعربية.",
+  "imageName": null,
+  "imageURL": "https://ytalebanon.org/assets/images/news/your-photo.png",
+  "url": "https://example.com/the-full-article"
+}
+```
+
+- `id` — any unique text you haven't used before.
+- `title` / `summary` — the Arabic headline and short summary; the app displays them right-to-left automatically.
+- `imageURL` — a link to any photo already hosted on your site (e.g. upload it next to the existing `assets/images/news/` photos and link to it there), or `null` for a clean text-only card — never leave it pointing at a broken link.
+- `imageName` — leave as `null`; it's only used internally for the six articles that ship with the app.
+- `url` — where "Read article" opens (the original press page, or a YouTube link, etc.).
+
+Users see the new article the next time they open the Press tab or pull to refresh — no app update needed.
+
 ## Rules of thumb
 
 - Always validate your edits at https://jsonlint.com before uploading — one missing comma breaks the feed (the app then falls back to its cached copy, so nothing crashes).
-- Keep image-free: alerts and polls are text by design so they load instantly on poor connections.
+- Keep alerts and polls image-free by design — they load instantly on poor connections. News articles may include one photo.
 - The app enforces one vote per device.
 
 ## Future upgrades (documented integration points)
