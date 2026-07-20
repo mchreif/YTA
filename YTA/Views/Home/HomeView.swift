@@ -22,6 +22,8 @@ struct HomeView: View {
 
     @Environment(ContentStore.self) private var content
     @Environment(CommunityStore.self) private var community
+    @Environment(EventsStore.self) private var events
+    @Environment(\.openURL) private var openURL
     @State private var viewModel = HomeViewModel()
 
     var body: some View {
@@ -77,6 +79,9 @@ struct HomeView: View {
         .fullScreenCover(item: $viewModel.activeFestivalVideo) { video in
             festivalPlayer(for: video)
         }
+        .task {
+            await events.loadIfNeeded()
+        }
     }
 
     /// Page one: the full-bleed hero video with the "Discover" ticker
@@ -85,7 +90,8 @@ struct HomeView: View {
         VStack(spacing: 0) {
             HeroSection(
                 onExplore: onExplore,
-                onUpcomingEvent: { viewModel.showEventVideo() }
+                onUpcomingEvent: { openActiveEvent() },
+                isUpcomingEventActive: events.hasUpcomingEvent
             )
             TickerView(items: content.tickerItems)
         }
@@ -151,6 +157,19 @@ struct HomeView: View {
         )
     }
 
+    /// Routes the "Upcoming Event" tap to wherever YTA published it:
+    /// their own link if given, otherwise the bundled promo video.
+    /// Only reachable while `events.hasUpcomingEvent` is true, since the
+    /// button is disabled otherwise.
+    private func openActiveEvent() {
+        if let link = events.activeEvent?.linkURL {
+            HapticsManager.impact()
+            openURL(link)
+        } else {
+            viewModel.showEventVideo()
+        }
+    }
+
     /// Player for the "Upcoming Event" promo.
     @ViewBuilder
     private var eventVideoPlayer: some View {
@@ -194,4 +213,5 @@ struct HomeView: View {
     HomeView(onExplore: {}, onOpenAlerts: {}, onPlanVisit: {})
         .environment(ContentStore())
         .environment(CommunityStore())
+        .environment(EventsStore())
 }

@@ -12,6 +12,7 @@ import Foundation
 ///   `polls.json` while the PHP endpoint isn't uploaded yet)
 /// - `POST /app/vote.php`    → records a vote, returns the updated `Poll`
 /// - `GET  /app/news.json`   → `[NewsArticle]`
+/// - `GET  /app/events.json` → `[UpcomingEvent]`
 struct CommunityAPI: Sendable {
 
     /// Errors surfaced to the store.
@@ -60,6 +61,13 @@ struct CommunityAPI: Sendable {
     /// YTA lists them in `news.json`).
     func fetchNews() async throws -> [NewsArticle] {
         try await get("news.json")
+    }
+
+    /// Fetches the currently published upcoming event(s), if any. An empty
+    /// (or missing) feed means the hero's "Upcoming Event" button should
+    /// stay disabled — there's nothing to promote right now.
+    func fetchEvents() async throws -> [UpcomingEvent] {
+        try await get("events.json")
     }
 
     /// Submits one vote and returns the poll with updated tallies when the

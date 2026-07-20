@@ -137,4 +137,5 @@ struct RootView: View {
         .environment(ContentStore())
         .environment(CommunityStore())
         .environment(NewsStore())
+        .environment(EventsStore())
 }

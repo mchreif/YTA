@@ -1,5 +1,32 @@
 # Release manifest — "Cinema of the Valley" redesign
 
+## Wave 1.8 — live-gated "Upcoming Event" button + new App Store icon
+
+**Added**
+
+| File | Change |
+|---|---|
+| `YTA/Models/UpcomingEvent.swift` | New model: `id`, `title`, optional `date`, optional `linkURL`. `isCurrent` ignores past-dated entries automatically |
+| `YTA/Services/EventsStore.swift` | New store mirroring `NewsStore`'s pattern exactly: remote fetch → disk cache → bundled seed. `hasUpcomingEvent` drives the hero button's enabled state |
+| `YTA/Resources/Seed/events-seed.json` | Bundled seed ships **empty** (`[]`) on purpose — until YTA publishes a real event, the button stays honestly disabled instead of always promoting a generic promo |
+| `Server/app/events.json` | Ready-to-upload live feed, also empty by default; admin adds an entry to switch the button on |
+
+**Changed**
+
+| File | Change |
+|---|---|
+| `YTA/Services/CommunityAPI.swift` | Added `fetchEvents()` → `GET /app/events.json` |
+| `YTA/Views/Home/HeroSection.swift` | Added `isUpcomingEventActive`; the "Upcoming Event" button is now `.disabled(...)`, dimmed to 45% opacity, and its gold pulse stops while there's nothing to promote |
+| `YTA/Views/Components/YTAButtonStyles.swift` | `GoldPulse`/`goldPulse()` takes an `isActive` flag so callers can suppress the glow on a disabled button |
+| `YTA/Views/Home/HomeView.swift` | Reads `EventsStore`; loads it on appear; tapping "Upcoming Event" now opens the published `linkURL` if YTA set one, otherwise falls back to the bundled festival promo video (unchanged behavior) |
+| `YTA/App/YTAApp.swift` · `YTA/App/RootView.swift` | `EventsStore` created once and injected via `.environment(...)`, alongside the other live-content stores |
+| `YTA/Assets.xcassets/AppIcon.appiconset/AppIcon.png` | New App Store icon: the official YAM brushstroke mark (text-free), recomposed centered on a diagonal navy-to-cedar-green gradient matching the app's brand palette. 1024×1024, no alpha channel (Apple requirement) — the previous version had the mark cropped off-center on a pale, low-contrast background |
+| `Server/ADMIN-GUIDE.md` | Added "Promoting an upcoming event" section |
+
+**Why:** the "Upcoming Event" button previously always played a bundled promo video regardless of whether YTA had anything scheduled. It now reflects reality — enabled only while a live event is published — using the same self-serve JSON pattern already proven for alerts, polls and news. The icon redesign fixes a real App Store presentation issue: the old crop was off-center and low-contrast on home screens.
+
+**Behavior change to be aware of:** immediately after this update ships, the button will show as disabled (nothing is published in `events.json` yet) until YTA uploads an entry per the new admin-guide section.
+
 ## Wave 1.7 — App Store readiness: privacy manifest
 
 **Added**

@@ -46,17 +46,24 @@ struct YTAGlassButtonStyle: ButtonStyle {
 /// animation on the "Upcoming Event" button. Honors Reduce Motion.
 struct GoldPulse: ViewModifier {
 
+    /// Whether the glow should run at all — off while the button it
+    /// decorates has nothing live to promote.
+    var isActive: Bool = true
+
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var pulsing = false
 
     func body(content: Content) -> some View {
         content
             .shadow(
-                color: Color.ytaGold.opacity(pulsing ? 0 : 0.55),
+                color: Color.ytaGold.opacity(isActive && !pulsing ? 0.55 : 0),
                 radius: pulsing ? 18 : 2
             )
-            .onAppear {
-                guard !reduceMotion else { return }
+            .onChange(of: isActive, initial: true) {
+                guard isActive, !reduceMotion else {
+                    pulsing = false
+                    return
+                }
                 withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: false)) {
                     pulsing = true
                 }
@@ -65,8 +72,10 @@ struct GoldPulse: ViewModifier {
 }
 
 extension View {
-    /// Applies the festival-gold pulsing glow.
-    func goldPulse() -> some View {
-        modifier(GoldPulse())
+    /// Applies the festival-gold pulsing glow. Pass `isActive: false` to
+    /// suppress it entirely (e.g. while the button it decorates is
+    /// disabled).
+    func goldPulse(isActive: Bool = true) -> some View {
+        modifier(GoldPulse(isActive: isActive))
     }
 }

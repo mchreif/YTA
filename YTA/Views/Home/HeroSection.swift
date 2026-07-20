@@ -8,8 +8,12 @@ struct HeroSection: View {
 
     /// Switches to the Yammouneh gallery tab (website: "Explore" → #yammouneh).
     let onExplore: () -> Void
-    /// Opens the festival promo video (website: "Upcoming Event" modal).
+    /// Opens the currently published event (website: "Upcoming Event" modal).
     let onUpcomingEvent: () -> Void
+    /// Whether YTA currently has a live event published — the button stays
+    /// dimmed and inert otherwise, so it never promotes something that
+    /// isn't actually happening.
+    let isUpcomingEventActive: Bool
 
     @Environment(ContentStore.self) private var content
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -77,7 +81,9 @@ struct HeroSection: View {
                             Text("Upcoming Event")
                         }
                         .buttonStyle(YTAGlassButtonStyle())
-                        .goldPulse()
+                        .disabled(!isUpcomingEventActive)
+                        .opacity(isUpcomingEventActive ? 1 : 0.45)
+                        .goldPulse(isActive: isUpcomingEventActive)
                     }
                     .padding(.top, 6)
 
@@ -124,7 +130,7 @@ struct HeroSection: View {
 }
 
 #Preview {
-    HeroSection(onExplore: {}, onUpcomingEvent: {})
+    HeroSection(onExplore: {}, onUpcomingEvent: {}, isUpcomingEventActive: true)
         .frame(height: 640)
         .environment(ContentStore())
 }

@@ -12,6 +12,7 @@ The app reads its live content from **your existing website hosting** — no new
    - `polls.php` — returns polls with live vote tallies
    - `vote.php` — records votes from the app
    - `news.json` — the Press tab's article feed
+   - `events.json` — controls the home screen's "Upcoming Event" button
 4. Verify: open `https://ytalebanon.org/app/alerts.json` in a browser — you should see the JSON.
 
 That's it. The app checks these files on every launch, on pull-to-refresh, and periodically in the background.
@@ -82,6 +83,29 @@ Edit `app/news.json` and add a new entry **at the top** (newest article first �
 - `url` — where "Read article" opens (the original press page, or a YouTube link, etc.).
 
 Users see the new article the next time they open the Press tab or pull to refresh — no app update needed.
+
+## Promoting an upcoming event
+
+The hero screen's **"Upcoming Event"** button is only lit up (tappable) while `app/events.json` lists a current event. With an empty feed (`[]`, the default), the button is dimmed and does nothing — the app never advertises an event that isn't real.
+
+To promote one, replace the file's contents with:
+
+```json
+[
+  {
+    "id": "2026-summer-festival",
+    "title": "Yammouneh Summer Festival",
+    "date": "2026-08-20T18:00:00Z",
+    "linkURL": "https://ytalebanon.org/festival"
+  }
+]
+```
+
+- `id` — any unique text.
+- `date` — ISO format, in UTC (`Z` suffix). Once this date/time passes, the button turns itself back off automatically — you don't need to remember to remove the entry. Use `null` to keep the promotion open-ended (stays on until you delete it).
+- `linkURL` — where the button takes people: your event or ticket page. Use `null` to instead play the festival promo video already bundled in the app.
+
+When you're done promoting, set the file back to `[]` (or delete the entry) and the button turns off.
 
 ## Rules of thumb
 

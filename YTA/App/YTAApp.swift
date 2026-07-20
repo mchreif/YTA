@@ -19,12 +19,16 @@ struct YTAApp: App {
     /// Live press articles (Press tab).
     @State private var news = NewsStore()
 
+    /// Live "Upcoming Event" promotion (Home hero button).
+    @State private var events = EventsStore()
+
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environment(content)
                 .environment(community)
                 .environment(news)
+                .environment(events)
                 .tint(.ytaGreen)
         }
         .backgroundTask(.appRefresh(CommunityBackgroundRefresh.taskIdentifier)) {
