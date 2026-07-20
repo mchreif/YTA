@@ -26,6 +26,9 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
+      - name: Resolve Swift package dependencies
+        run: xcodebuild -resolvePackageDependencies -project YTA.xcodeproj -scheme YTA
+
       - name: List schemes
         run: xcodebuild -list -project YTA.xcodeproj
 

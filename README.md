@@ -7,7 +7,7 @@ The official app of the **Yammouneh Tourism Association (YTA)**, a community-led
 - **Animated splash intro** — the YTA logo over a living `MeshGradient`, auto-dismisses into the app
 - **Home** — four full-screen pages with vertical snap paging: full-bleed hero video → 01 Mission (six program cards, 2018/2019/2023 festival videos) → 02 Impact (animated counters) → 03 Board
 - **Yammouneh (Explore)** — the "Cinema of the Valley" journey: seasonal crossfading scene header (the site's own summer/autumn/winter photography), a gold route-line threading the six official scenes, attraction detail screens (iOS 18 zoom transition, slow push-in hero, official story text, directions/guide/share, related scenes), and the full-screen lightbox
-- **Community** — broadcast alerts and project polls fed live from ytalebanon.org, with offline caching, unread badges, quiet background notifications, and confetti-on-vote (see [`Server/ADMIN-GUIDE.md`](Server/ADMIN-GUIDE.md) for how the admin publishes content)
+- **Community** — broadcast alerts and project polls fed live from ytalebanon.org, with offline caching, unread badges, quiet background notifications, instant push via OneSignal, and confetti-on-vote (see [`Server/ADMIN-GUIDE.md`](Server/ADMIN-GUIDE.md) for how the admin publishes content and sends a push)
 - **Press** — Arabic press coverage of YTA, fed live from ytalebanon.org (so YTA can publish a new article without an app update — see `Server/ADMIN-GUIDE.md`), opening in in-app Safari
 - **Connect** — call/email/directions, MapKit satellite map, share sheet
 
@@ -85,6 +85,6 @@ Running in the simulator requires **no Apple Developer account and no signing**.
 | Installing on a physical iPhone | Free Apple ID + a Mac (7-day builds), or Apple Developer Program |
 | TestFlight beta testing | Apple Developer Program ($99/year) |
 | App Store release | Apple Developer Program + App Store review |
-| Instant push notifications | Developer Program (APNs key) — see `Server/ADMIN-GUIDE.md`; background-refresh notifications already work without it |
+| Instant push notifications | Developer Program (APNs key, for the Push Notifications capability) + a free OneSignal account — full walkthrough in `Server/ADMIN-GUIDE.md` |
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the technical deep-dive and the documented live-feed endpoints (alerts, polls, news).

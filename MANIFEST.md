@@ -1,5 +1,36 @@
 # Release manifest — "Cinema of the Valley" redesign
 
+## Wave 1.9 — instant push notifications (OneSignal)
+
+**Added**
+
+| File | Change |
+|---|---|
+| `YTA/Services/OneSignalConfig.swift` | Holds the OneSignal App ID (ships as a placeholder — see "Configuration required" below) |
+| `YTA/App/AppDelegate.swift` | Initializes the OneSignal SDK at launch (skipped no-op while the App ID is still the placeholder) |
+
+**Changed**
+
+| File | Change |
+|---|---|
+| `project.yml` | Added the `OneSignal-XCFramework` Swift Package (product `OneSignalFramework`); added a generated `YTA.entitlements` (`aps-environment`) |
+| `Config/Info.plist` | `UIBackgroundModes` gained `remote-notification` alongside the existing `fetch` |
+| `YTA/App/YTAApp.swift` | Wired `AppDelegate` in via `@UIApplicationDelegateAdaptor` (SwiftUI's `App` protocol has no launch hook of its own — OneSignal needs one) |
+| `.github/workflows/ios-simulator-build.yml` | Added an explicit "Resolve Swift package dependencies" step so a package-resolution failure shows clearly in CI logs instead of being buried inside the build step |
+| `Server/ADMIN-GUIDE.md` | New "Push notifications" section: full OneSignal + APNs key setup walkthrough and how to send a push; removed the now-obsolete "future upgrade" row |
+| `README.md`, `ARCHITECTURE.md` | Updated to describe the push channel alongside the existing background-refresh notifications |
+
+**Why:** the existing background-refresh notifications can lag by hours (iOS decides when `BGAppRefreshTask` runs) or never fire if the app was force-quit. OneSignal gives YTA staff a dashboard where sending a push reaches every installed device — locked, backgrounded, or closed — within seconds, without requiring any server infrastructure beyond their existing Bluehost hosting.
+
+**Configuration required before this works — none of it is something Claude can do on the user's behalf:**
+1. Create a free OneSignal account and app.
+2. Generate an APNs auth key in the Apple Developer portal and upload it to OneSignal.
+3. Copy the OneSignal App ID into `YTA/Services/OneSignalConfig.swift`, replacing `REPLACE_WITH_ONESIGNAL_APP_ID`.
+
+Full step-by-step is in `Server/ADMIN-GUIDE.md` → "Push notifications — instant alerts to every user". Until step 3 is done, `AppDelegate` intentionally no-ops — the rest of the app is unaffected.
+
+**Known overlap:** the existing background-refresh local notifications (Wave-1 era, `CommunityBackgroundRefresh`) still run independently of this push channel. If both happen to fire for the same alert, a user could see two notifications instead of one. Left as-is for now since it's a minor, self-resolving overlap (not a crash or data issue) — worth revisiting only if it turns out to bother users in practice.
+
 ## Wave 1.8 — live-gated "Upcoming Event" button + new App Store icon
 
 **Added**

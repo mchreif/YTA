@@ -10,6 +10,11 @@ configs:
   Debug: debug
   Release: release
 
+packages:
+  OneSignalXCFramework:
+    github: OneSignal/OneSignal-XCFramework
+    from: 5.5.4
+
 settings:
   base:
     SWIFT_VERSION: "5.0"
@@ -32,6 +37,14 @@ targets:
           - "ViewModels/MediaViewModel.swift"
           - "Models/InstagramPost.swift"
           - "Resources/Videos/welcome-message.mp4"
+    dependencies:
+      - package: OneSignalXCFramework
+        products:
+          - OneSignalFramework
+    entitlements:
+      path: YTA/YTA.entitlements
+      properties:
+        aps-environment: development
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: org.ytalebanon.app

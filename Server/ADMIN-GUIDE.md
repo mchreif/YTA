@@ -107,6 +107,34 @@ To promote one, replace the file's contents with:
 
 When you're done promoting, set the file back to `[]` (or delete the entry) and the button turns off.
 
+## Push notifications — instant alerts to every user
+
+Unlike everything above (which people see the next time they open the app), a push notification reaches every phone within seconds — locked, backgrounded, or app fully closed. It's powered by [OneSignal](https://onesignal.com), a free push service; no server of your own is needed.
+
+### One-time setup (about 15 minutes, needs your Apple Developer account)
+
+1. Create a free account at [onesignal.com](https://onesignal.com) and create a new app (platform: **Apple iOS (APNs)**). Name it "YTA Lebanon" or similar.
+2. Generate an APNs key so OneSignal can talk to Apple on your behalf:
+   - Sign in to [developer.apple.com](https://developer.apple.com) → **Certificates, Identifiers & Profiles → Keys**.
+   - Click **+**, name it "OneSignal Push", check **Apple Push Notifications service (APNs)**, then **Continue → Register**.
+   - **Download the `.p8` file now** — Apple only lets you download it once. Also note the **Key ID** shown on that page, and your **Team ID** (top-right of the Apple Developer site, under your name).
+3. Back in OneSignal: **Settings → Push & In-App → Apple iOS (APNs)** → upload the `.p8` file along with the Key ID and Team ID.
+4. Still in OneSignal: **Settings → Keys & IDs** → copy the **OneSignal App ID** (a long string of letters and numbers).
+5. Send that App ID to your developer to paste into `YTA/Services/OneSignalConfig.swift` (replacing the placeholder), then rebuild and resubmit the app. Push notifications silently do nothing until this step is done — nothing else in the app depends on it or breaks without it.
+6. One Apple-side check: **developer.apple.com → Identifiers → org.ytalebanon.app** should have **Push Notifications** listed as an enabled capability (Xcode's automatic signing usually turns this on by itself the first time the app is archived for release; if the App Store build fails signing, this is the first thing to check).
+
+### Sending a notification
+
+1. Log in to [onesignal.com](https://onesignal.com) → your app → **Messages → New Push**.
+2. Write a title and message — e.g. "Road closed for festival weekend" or "New poll: winter snowshoe festival?".
+3. Leave **Audience** as **All Subscribed Users** (OneSignal's Segments feature can target more precisely later, if ever needed).
+4. Click **Send**. It reaches every device with the app installed, typically within seconds.
+
+### Notes
+
+- The app already requests notification permission quietly (no popup) the first time it's opened, so most users are automatically subscribed without doing anything on their end.
+- This is a separate channel from the in-app **Alerts** tab — sending a push *and* adding the same entry to `alerts.json` keeps both in sync, so anyone who missed the push still sees it the next time they open the app.
+
 ## Rules of thumb
 
 - Always validate your edits at https://jsonlint.com before uploading — one missing comma breaks the feed (the app then falls back to its cached copy, so nothing crashes).
@@ -117,6 +145,7 @@ When you're done promoting, set the file back to `[]` (or delete the entry) and 
 
 | Want | Needs |
 |---|---|
-| Instant push notifications to locked phones | An APNs key (Apple Developer account) + a small push service, or a provider like OneSignal/Firebase. The app's `NotificationManager` is where device-token registration would go. |
+| Target a push at a subset of users (e.g. only people who opened Community before) | OneSignal's free Segments/Filters feature — no code change needed |
+| Auto-send a push whenever `alerts.json` is edited, instead of sending manually | A small script triggered on upload (e.g. an FTP/cron hook) calling OneSignal's REST API |
 | Vote fraud protection beyond per-device | Move `vote.php` logic behind an authenticated API. |
 | An admin app instead of file editing | Point `CommunityAPI.baseURL` at any CMS that outputs the same JSON. |

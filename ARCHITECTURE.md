@@ -6,13 +6,16 @@ The app follows **MVVM** with the Observation framework (`@Observable`), Swift C
 
 ```
 YTA/
-├── App/                YTAApp (entry point + background task), RootView (splash, tabs, deep links)
+├── App/                YTAApp (entry point + background task), AppDelegate (OneSignal startup
+│                       hook, via @UIApplicationDelegateAdaptor), RootView (splash, tabs, deep links)
 ├── Theme/              YTATheme — brand colors, typography, metrics, card & reveal styles
 ├── Models/             Program, BoardMember, GalleryPhoto, ImpactStat, NewsArticle,
 │                       ContactInfo, CommunityAlert, Poll — value types, Sendable, Codable
 ├── Services/           ContentStore (bundled website content), CommunityAPI (networking client
-│                       shared by alerts/polls/news), CommunityStore (alerts/polls state + cache),
-│                       NewsStore (press articles state + cache), VideoLibrary, ExternalLinks
+│                       shared by alerts/polls/news/events), CommunityStore (alerts/polls state +
+│                       cache), NewsStore (press articles state + cache), EventsStore (Upcoming
+│                       Event gating state + cache), OneSignalConfig (push credentials),
+│                       VideoLibrary, ExternalLinks
 ├── ViewModels/         One @MainActor @Observable view model per screen
 │                       (Home, Gallery, Media, Press, Connect, Community)
 ├── Views/
@@ -64,7 +67,9 @@ GET  https://ytalebanon.org/app/news.json     → [NewsArticle]
 
 `CommunityStore` and `NewsStore` (both @MainActor @Observable) each own their slice of state with the same three-level fallback: remote → last-good disk cache (Application Support, via the shared `DiskCache` enum) → bundled seed JSON (via `SeedContent`, in `CommunityStore.swift`). Poll votes are optimistic (counted locally, persisted per device, then submitted). Community's unread tracking lives in UserDefaults and drives the tab badge and the Home bell. `SyncStatusLabel` is the shared "Updated 2m ago / Offline — showing saved content" indicator both screens display.
 
-**Background alerts:** `CommunityBackgroundRefresh` runs under `.backgroundTask(.appRefresh(...))`, diffing the feed against known alert ids and delivering quiet local notifications (provisional authorization — no permission prompt). Instant lock-screen push would require APNs; the integration point is documented in `Server/ADMIN-GUIDE.md`.
+**Background alerts:** `CommunityBackgroundRefresh` runs under `.backgroundTask(.appRefresh(...))`, diffing the feed against known alert ids and delivering quiet local notifications (provisional authorization — no permission prompt) as an offline-friendly fallback.
+
+**Instant push:** `AppDelegate` initializes OneSignal (SPM package `OneSignal-XCFramework`, product `OneSignalFramework`) at launch with the App ID in `OneSignalConfig`. This is a separate, server-triggered channel — YTA staff send a push from the OneSignal dashboard (no code path in this app sends one automatically); it reaches every subscribed device within seconds regardless of background-refresh timing. Full one-time setup (OneSignal account, APNs key, App ID) is documented in `Server/ADMIN-GUIDE.md`.
 
 **News images:** the six launch articles ship as bundled assets (`imageName`); an article YTA adds later supplies `imageURL` pointing at any photo already hosted on ytalebanon.org (loaded via `AsyncImage`), or omits both fields for a text-only card — never a broken-image state.
 

@@ -10,6 +10,9 @@ import SwiftUI
 @main
 struct YTAApp: App {
 
+    /// Bridges OneSignal's SDK startup — see `AppDelegate`.
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     /// Single source of truth for all website-derived content.
     @State private var content = ContentStore()
 
