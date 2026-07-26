@@ -8,5 +8,5 @@ import Foundation
 /// Push notifications silently do nothing until this placeholder is
 /// replaced; nothing else in the app depends on it.
 enum OneSignalConfig {
-    static let appID = "REPLACE_WITH_ONESIGNAL_APP_ID"
+    static let appID = "5ea25e43-90d6-4c34-a91e-1bbca5db8063"
 }

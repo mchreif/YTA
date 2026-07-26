@@ -1,5 +1,13 @@
 # Release manifest — "Cinema of the Valley" redesign
 
+## Wave 1.10 — set the real OneSignal App ID
+
+| File | Change |
+|---|---|
+| `YTA/Services/OneSignalConfig.swift` | `appID` set to the association's real OneSignal App ID (was a placeholder since Wave 1.9). Push notifications are now functional pending the APNs auth key upload documented in `Server/ADMIN-GUIDE.md` |
+
+**Why:** the same App ID is now shared with the new React Native rebuild (`YTA-ReactNative/`) as well, so a single OneSignal dashboard reaches users of either app with one push.
+
 ## Wave 1.9 — instant push notifications (OneSignal)
 
 **Added**
