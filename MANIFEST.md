@@ -1,5 +1,28 @@
 # Release manifest — "Cinema of the Valley" redesign
 
+## Wave 1.11 — branded admin tools for alerts & polls
+
+**Added**
+
+| File | Change |
+|---|---|
+| `Server/app/admin-style.css` | Shared branded look for the admin tools — green/gold/navy tokens matching the app, Outfit + Fraunces via Google Fonts, mobile-responsive (fluid card width, 44px+ touch targets) |
+| `Server/app/admin-login.php` | Shared password gate, included by both tools below |
+| `Server/app/manage-polls.php` | New: create a poll from a form (question, details, optional close date, 2–4 options) instead of hand-editing `polls.json`. Also shows a live results dashboard (percentage bars, vote counts, open/closed status) and a Delete action that cleans up `votes.json` too |
+| `Server/app/config.local.example.php` | Template for the secrets `send-alert.php`/`manage-polls.php` need (OneSignal App ID, REST API Key, admin password) — copy to `config.local.php` on the server and fill in; that file is gitignored and must never be committed |
+
+**Changed**
+
+| File | Change |
+|---|---|
+| `Server/app/send-alert.php` | Restyled with the shared branded look (was plain unstyled HTML); severity picker is now a set of colored pills instead of a `<select>` |
+| `Server/ADMIN-GUIDE.md` | Documents both tools as the recommended path, keeping the manual JSON-editing instructions as a fallback |
+| `.gitignore` | Excludes `Server/app/config.local.php` |
+
+**Why:** editing JSON by hand and separately using OneSignal's dashboard were both workable but easy to get wrong (a typo breaks the feed silently, or the two channels end up out of sync). These tools remove the JSON-syntax risk entirely and, for alerts, do both actions atomically so they can never drift apart.
+
+**Verified:** all three PHP files pass `php -l`; the full create → view results → delete flow was exercised end-to-end in an isolated local environment with fake data (never touching the live site or sending a real push), including confirming the written JSON exactly matches the schema the apps expect. Also confirmed mobile-responsive layout and computed brand colors/fonts via a real browser render.
+
 ## Wave 1.10 — set the real OneSignal App ID
 
 | File | Change |

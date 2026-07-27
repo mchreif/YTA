@@ -13,3 +13,7 @@ build/
 *.dSYM.zip
 *.dSYM
 .DS_Store
+
+# Server admin-tool secrets (OneSignal REST API key, admin password) —
+# uploaded directly to the live server via FTP, never committed.
+Server/app/config.local.php

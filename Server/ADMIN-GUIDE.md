@@ -13,6 +13,8 @@ The app reads its live content from **your existing website hosting** — no new
    - `vote.php` — records votes from the app
    - `news.json` — the Press tab's article feed
    - `events.json` — controls the home screen's "Upcoming Event" button
+   - `admin-style.css`, `admin-login.php` — shared look and sign-in for the admin tools below
+   - `send-alert.php`, `manage-polls.php` — the actual admin tools (see their sections below for one-time setup — each needs a `config.local.php` you create yourself, **never** upload `config.local.example.php`'s filled-in values from anywhere but your own server)
 4. Verify: open `https://ytalebanon.org/app/alerts.json` in a browser — you should see the JSON.
 
 That's it. The app checks these files on every launch, on pull-to-refresh, and periodically in the background.
@@ -39,9 +41,15 @@ Edit `app/alerts.json` and add a new entry **at the top**:
 
 Users with the app open see it instantly on refresh; everyone else gets a quiet notification the next time iOS runs the app's background refresh (typically within a few hours). For *instant* push to locked phones, an Apple Push Notification server would be needed — see "Future upgrades" below.
 
-## Creating a poll
+## Creating a poll — `manage-polls.php` (recommended)
 
-Edit `app/polls.json` and add:
+Visit `https://ytalebanon.org/app/manage-polls.php`, sign in, and fill in the question, optional details, an optional closing date, and 2–4 options. Publishing writes the poll to `polls.json` for you — no manual JSON editing. The same page shows a **live results dashboard** underneath (percentage bars, vote counts, open/closed status) for every existing poll, with a **Delete** button that also cleans up its recorded votes.
+
+This shares the same sign-in as `send-alert.php` — see "Push notifications" below for the one-time setup both tools need (a `config.local.php` with an admin password).
+
+### Doing it by hand instead
+
+If you'd rather edit the file directly, add a new entry to `app/polls.json`:
 
 ```json
 {
@@ -59,7 +67,7 @@ Edit `app/polls.json` and add:
 
 - `closesAt` — when voting ends (the app then shows final results and highlights the winner). Use `null` to keep it open forever.
 - Start `votes` at `0`; `vote.php` adds real votes on top in `votes.json` (created automatically — don't edit it).
-- To see results: open `https://ytalebanon.org/app/polls.php` in a browser.
+- To see raw results without `manage-polls.php`: open `https://ytalebanon.org/app/polls.php` in a browser (plain JSON, not a formatted page).
 
 ## Publishing a news article
 
