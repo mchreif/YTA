@@ -1,25 +1,28 @@
-# YTA App — Admin Guide (Alerts, Polls & News)
+# YTA App — Admin Guide (Alerts, Polls, News & Event)
 
-The app reads its live content from **your existing website hosting** — no new servers, no accounts, no monthly costs. You publish content by editing small text files.
+The app reads its live content from **your existing website hosting** — no new servers, no accounts, no monthly costs. Four small admin pages let you publish everything from a browser, without hand-editing JSON.
 
 ## One-time setup (5 minutes)
 
 1. In your Bluehost file manager (or FTP), go to the folder that serves `ytalebanon.org` (usually `public_html`).
 2. Create a folder named `app`.
 3. Upload everything inside `Server/app/` from this project:
-   - `alerts.json` — the announcements feed
-   - `polls.json` — the polls feed
+   - `alerts.json`, `polls.json`, `news.json`, `events.json` — the live content feeds
    - `polls.php` — returns polls with live vote tallies
    - `vote.php` — records votes from the app
-   - `news.json` — the Press tab's article feed
-   - `events.json` — controls the home screen's "Upcoming Event" button
-   - `admin-style.css`, `admin-login.php` — shared look and sign-in for the admin tools below
-   - `send-alert.php`, `manage-polls.php` — the actual admin tools (see their sections below for one-time setup — each needs a `config.local.php` you create yourself, **never** upload `config.local.example.php`'s filled-in values from anywhere but your own server)
+   - `admin-style.css`, `admin-login.php`, `admin-nav.php` — shared look, sign-in, and top navigation for the four admin tools below
+   - `send-alert.php`, `manage-polls.php`, `manage-news.php`, `manage-event.php` — the admin tools themselves (see their sections below; `send-alert.php` needs a one-time `config.local.php` you create yourself — **never** upload real secrets from anywhere but your own server)
 4. Verify: open `https://ytalebanon.org/app/alerts.json` in a browser — you should see the JSON.
 
-That's it. The app checks these files on every launch, on pull-to-refresh, and periodically in the background.
+That's it. The app checks these files on every launch, on pull-to-refresh, and periodically in the background. All four tools share one login — sign in once at any of them and a top nav bar (Alerts · Polls · News · Event) links between the rest.
 
-## Sending an alert to all users
+## Sending an alert — `send-alert.php` (recommended)
+
+Visit `https://ytalebanon.org/app/send-alert.php`, sign in, and fill in a title, message, severity (info/event/urgent), and an optional link. Publishing does two things at once: it adds the entry to `alerts.json` **and** sends an instant push notification to every subscribed device via OneSignal — one form, both steps, always in sync.
+
+One-time setup: copy `config.local.example.php` to `config.local.php` in the same `app/` folder and fill in your OneSignal **App ID**, **REST API Key** (Settings → Keys & IDs in the OneSignal dashboard), and an admin password of your choosing. This file is gitignored and must never be committed or shared — it holds real secrets.
+
+### Doing it by hand instead
 
 Edit `app/alerts.json` and add a new entry **at the top**:
 
@@ -39,13 +42,11 @@ Edit `app/alerts.json` and add a new entry **at the top**:
 - `date` — ISO format, in UTC (`Z` suffix). Newest date shows first.
 - `linkURL` — a web link for a "Learn more" button, or `null`.
 
-Users with the app open see it instantly on refresh; everyone else gets a quiet notification the next time iOS runs the app's background refresh (typically within a few hours). For *instant* push to locked phones, an Apple Push Notification server would be needed — see "Future upgrades" below.
+Editing the file by hand does **not** send a push — pair it with a manual OneSignal send (see "Sending a notification without send-alert.php" below) if you want one.
 
 ## Creating a poll — `manage-polls.php` (recommended)
 
 Visit `https://ytalebanon.org/app/manage-polls.php`, sign in, and fill in the question, optional details, an optional closing date, and 2–4 options. Publishing writes the poll to `polls.json` for you — no manual JSON editing. The same page shows a **live results dashboard** underneath (percentage bars, vote counts, open/closed status) for every existing poll, with a **Delete** button that also cleans up its recorded votes.
-
-This shares the same sign-in as `send-alert.php` — see "Push notifications" below for the one-time setup both tools need (a `config.local.php` with an admin password).
 
 ### Doing it by hand instead
 
@@ -69,9 +70,13 @@ If you'd rather edit the file directly, add a new entry to `app/polls.json`:
 - Start `votes` at `0`; `vote.php` adds real votes on top in `votes.json` (created automatically — don't edit it).
 - To see raw results without `manage-polls.php`: open `https://ytalebanon.org/app/polls.php` in a browser (plain JSON, not a formatted page).
 
-## Publishing a news article
+## Publishing a news article — `manage-news.php` (recommended)
 
-Edit `app/news.json` and add a new entry **at the top** (newest article first — the Press tab shows them in file order and numbers them automatically):
+Visit `https://ytalebanon.org/app/manage-news.php`, sign in, and fill in the title and summary (both typed right-to-left in Arabic), the article link, and an optional photo URL. Publishing adds it to `news.json` for you, newest first. The page also lists every existing article with a **Delete** button.
+
+### Doing it by hand instead
+
+Edit `app/news.json` and add a new entry **at the top** (newest article first):
 
 ```json
 {
@@ -92,11 +97,15 @@ Edit `app/news.json` and add a new entry **at the top** (newest article first �
 
 Users see the new article the next time they open the Press tab or pull to refresh — no app update needed.
 
-## Promoting an upcoming event
+## Promoting an upcoming event — `manage-event.php` (recommended)
 
-The hero screen's **"Upcoming Event"** button is only lit up (tappable) while `app/events.json` lists a current event. With an empty feed (`[]`, the default), the button is dimmed and does nothing — the app never advertises an event that isn't real.
+Visit `https://ytalebanon.org/app/manage-event.php` and sign in. The Home screen's **"Upcoming Event"** button only lights up while one event is active — this page presents it as a simple **on/off toggle** rather than a list, since the app only ever looks at the first event in the feed.
 
-To promote one, replace the file's contents with:
+Fill in a title, an optional end date/time (the button turns itself off automatically once it passes — leave blank to keep it on until you turn it off manually), and an optional link (leave blank and it plays the bundled promo video instead). Click **Turn On**. When you're done promoting, come back and click **Turn Off**.
+
+### Doing it by hand instead
+
+Replace `app/events.json`'s contents with:
 
 ```json
 [
@@ -110,14 +119,14 @@ To promote one, replace the file's contents with:
 ```
 
 - `id` — any unique text.
-- `date` — ISO format, in UTC (`Z` suffix). Once this date/time passes, the button turns itself back off automatically — you don't need to remember to remove the entry. Use `null` to keep the promotion open-ended (stays on until you delete it).
-- `linkURL` — where the button takes people: your event or ticket page. Use `null` to instead play the festival promo video already bundled in the app.
+- `date` — ISO format, in UTC (`Z` suffix), or `null` to keep the promotion open-ended.
+- `linkURL` — where the button takes people, or `null` to play the bundled promo video instead.
 
-When you're done promoting, set the file back to `[]` (or delete the entry) and the button turns off.
+Set the file back to `[]` (or delete the entry) and the button turns off.
 
-## Push notifications — instant alerts to every user
+## Push notifications — how it works
 
-Unlike everything above (which people see the next time they open the app), a push notification reaches every phone within seconds — locked, backgrounded, or app fully closed. It's powered by [OneSignal](https://onesignal.com), a free push service; no server of your own is needed.
+Every alert sent through `send-alert.php` already triggers an instant push via [OneSignal](https://onesignal.com) to every subscribed device — locked, backgrounded, or app fully closed — typically within seconds. No separate step is needed for the common case.
 
 ### One-time setup (about 15 minutes, needs your Apple Developer account)
 
@@ -127,25 +136,27 @@ Unlike everything above (which people see the next time they open the app), a pu
    - Click **+**, name it "OneSignal Push", check **Apple Push Notifications service (APNs)**, then **Continue → Register**.
    - **Download the `.p8` file now** — Apple only lets you download it once. Also note the **Key ID** shown on that page, and your **Team ID** (top-right of the Apple Developer site, under your name).
 3. Back in OneSignal: **Settings → Push & In-App → Apple iOS (APNs)** → upload the `.p8` file along with the Key ID and Team ID.
-4. Still in OneSignal: **Settings → Keys & IDs** → copy the **OneSignal App ID** (a long string of letters and numbers).
-5. Send that App ID to your developer to paste into `YTA/Services/OneSignalConfig.swift` (replacing the placeholder), then rebuild and resubmit the app. Push notifications silently do nothing until this step is done — nothing else in the app depends on it or breaks without it.
+4. Still in OneSignal: **Settings → Keys & IDs** → copy the **OneSignal App ID** and generate/copy a **REST API Key**. Both go into `config.local.php` (see the "Sending an alert" section above).
+5. Send the App ID to your developer to paste into `YTA/Services/OneSignalConfig.swift` (replacing the placeholder), then rebuild and resubmit the app. Push notifications silently do nothing until this step is done — nothing else in the app depends on it or breaks without it.
 6. One Apple-side check: **developer.apple.com → Identifiers → org.ytalebanon.app** should have **Push Notifications** listed as an enabled capability (Xcode's automatic signing usually turns this on by itself the first time the app is archived for release; if the App Store build fails signing, this is the first thing to check).
 
-### Sending a notification
+### Sending a notification without send-alert.php
+
+If you ever want to send a push that *isn't* tied to a new alert (e.g. a poll reminder), you can still do it manually:
 
 1. Log in to [onesignal.com](https://onesignal.com) → your app → **Messages → New Push**.
-2. Write a title and message — e.g. "Road closed for festival weekend" or "New poll: winter snowshoe festival?".
-3. Leave **Audience** as **All Subscribed Users** (OneSignal's Segments feature can target more precisely later, if ever needed).
-4. Click **Send**. It reaches every device with the app installed, typically within seconds.
+2. Write a title and message — e.g. "New poll: winter snowshoe festival?".
+3. Leave **Audience** as **All Subscribed Users**.
+4. Click **Send**.
 
 ### Notes
 
 - The app already requests notification permission quietly (no popup) the first time it's opened, so most users are automatically subscribed without doing anything on their end.
-- This is a separate channel from the in-app **Alerts** tab — sending a push *and* adding the same entry to `alerts.json` keeps both in sync, so anyone who missed the push still sees it the next time they open the app.
+- A manual push sent this way isn't automatically added to the in-app **Alerts** tab — use `send-alert.php` instead if you want both in sync.
 
 ## Rules of thumb
 
-- Always validate your edits at https://jsonlint.com before uploading — one missing comma breaks the feed (the app then falls back to its cached copy, so nothing crashes).
+- If editing JSON by hand, always validate at https://jsonlint.com before uploading — one missing comma breaks the feed (the app then falls back to its cached copy, so nothing crashes).
 - Keep alerts and polls image-free by design — they load instantly on poor connections. News articles may include one photo.
 - The app enforces one vote per device.
 
@@ -154,6 +165,5 @@ Unlike everything above (which people see the next time they open the app), a pu
 | Want | Needs |
 |---|---|
 | Target a push at a subset of users (e.g. only people who opened Community before) | OneSignal's free Segments/Filters feature — no code change needed |
-| Auto-send a push whenever `alerts.json` is edited, instead of sending manually | A small script triggered on upload (e.g. an FTP/cron hook) calling OneSignal's REST API |
 | Vote fraud protection beyond per-device | Move `vote.php` logic behind an authenticated API. |
 | An admin app instead of file editing | Point `CommunityAPI.baseURL` at any CMS that outputs the same JSON. |

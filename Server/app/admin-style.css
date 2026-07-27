@@ -1,5 +1,6 @@
-/* Shared look for the YTA admin tools (send-alert.php, manage-polls.php) —
-   matches the app's brand tokens: green #16A34A, gold #FFB41D, navy #0F172A. */
+/* Shared look for the YTA admin tools (send-alert.php, manage-polls.php,
+   manage-news.php, manage-event.php) — matches the app's brand tokens:
+   green #16A34A, gold #FFB41D, navy #0F172A. */
 
 * { box-sizing: border-box; }
 
@@ -24,6 +25,32 @@ body {
 @media (max-width: 480px) {
   body { padding: 16px 10px 40px; }
   .admin-card { padding: 24px 18px; border-radius: 16px; }
+}
+
+.admin-nav {
+  max-width: 560px;
+  margin: 0 auto 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.admin-nav a {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6B7280;
+  text-decoration: none;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid #E5E7EB;
+}
+
+.admin-nav a.active {
+  color: #FFFFFF;
+  background: #16A34A;
+  border-color: #16A34A;
 }
 
 .admin-header {

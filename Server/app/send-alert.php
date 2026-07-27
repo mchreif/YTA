@@ -142,6 +142,7 @@ if (isset($_POST['title'], $_POST['message'])) {
 <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
+<?php $currentPage = 'alerts'; include __DIR__ . '/admin-nav.php'; ?>
 <div class="admin-card">
   <div class="admin-header">
     <img src="https://ytalebanon.org/assets/images/logos/yam.png" alt="YTA">
@@ -193,8 +194,6 @@ if (isset($_POST['title'], $_POST['message'])) {
 
     <button type="submit">Publish &amp; Send Push</button>
   </form>
-
-  <a class="top-link" href="manage-polls.php">Manage polls instead →</a>
 </div>
 </body>
 </html>

@@ -168,6 +168,7 @@ foreach ($displayPolls as $pi => $poll) {
 <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
+<?php $currentPage = 'polls'; include __DIR__ . '/admin-nav.php'; ?>
 <div class="admin-card">
   <div class="admin-header">
     <img src="https://ytalebanon.org/assets/images/logos/yam.png" alt="YTA">
@@ -254,7 +255,6 @@ foreach ($displayPolls as $pi => $poll) {
     </div>
   <?php endif; ?>
 
-  <a class="top-link" href="send-alert.php">Send an alert instead →</a>
 </div>
 </body>
 </html>
