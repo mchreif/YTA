@@ -48,6 +48,8 @@ Editing the file by hand does **not** send a push — pair it with a manual OneS
 
 Visit `https://ytalebanon.org/app/manage-polls.php`, sign in, and fill in the question, optional details, an optional closing date, and 2–4 options. Publishing writes the poll to `polls.json` for you — no manual JSON editing. The same page shows a **live results dashboard** underneath (percentage bars, vote counts, open/closed status) for every existing poll, with a **Delete** button that also cleans up its recorded votes.
 
+Tick **"Also send a push notification to everyone"** if you want this poll announced instantly, the same way `send-alert.php` does — left unchecked (the default), publishing stays quiet and only shows up next time someone opens the app.
+
 ### Doing it by hand instead
 
 If you'd rather edit the file directly, add a new entry to `app/polls.json`:
@@ -73,6 +75,8 @@ If you'd rather edit the file directly, add a new entry to `app/polls.json`:
 ## Publishing a news article — `manage-news.php` (recommended)
 
 Visit `https://ytalebanon.org/app/manage-news.php`, sign in, and fill in the title and summary (both typed right-to-left in Arabic), the article link, and an optional photo URL. Publishing adds it to `news.json` for you, newest first. The page also lists every existing article with a **Delete** button.
+
+Tick **"Also send a push notification to everyone"** to announce the article instantly — left unchecked (the default), it just shows up next time someone opens the Press tab.
 
 ### Doing it by hand instead
 
@@ -101,7 +105,7 @@ Users see the new article the next time they open the Press tab or pull to refre
 
 Visit `https://ytalebanon.org/app/manage-event.php` and sign in. The Home screen's **"Upcoming Event"** button only lights up while one event is active — this page presents it as a simple **on/off toggle** rather than a list, since the app only ever looks at the first event in the feed.
 
-Fill in a title, an optional end date/time (the button turns itself off automatically once it passes — leave blank to keep it on until you turn it off manually), and an optional link (leave blank and it plays the bundled promo video instead). Click **Turn On**. When you're done promoting, come back and click **Turn Off**.
+Fill in a title, an optional end date/time (the button turns itself off automatically once it passes — leave blank to keep it on until you turn it off manually), and an optional link (leave blank and it plays the bundled promo video instead). Tick **"Also send a push notification to everyone"** if you want to announce it instantly (only offered when turning the event *on* — turning it off never pushes). Click **Turn On**. When you're done promoting, come back and click **Turn Off**.
 
 ### Doing it by hand instead
 
@@ -126,7 +130,7 @@ Set the file back to `[]` (or delete the entry) and the button turns off.
 
 ## Push notifications — how it works
 
-Every alert sent through `send-alert.php` already triggers an instant push via [OneSignal](https://onesignal.com) to every subscribed device — locked, backgrounded, or app fully closed — typically within seconds. No separate step is needed for the common case.
+Every alert sent through `send-alert.php` already triggers an instant push automatically. The other three tools (`manage-polls.php`, `manage-news.php`, `manage-event.php`) each have an optional **"Also send a push notification to everyone"** checkbox, unchecked by default — tick it only when you want that specific poll, article, or event announced instantly rather than just quietly showing up next time someone opens the app. All four use the same [OneSignal](https://onesignal.com)-powered channel, reaching every subscribed device — locked, backgrounded, or app fully closed — typically within seconds.
 
 ### One-time setup (about 15 minutes, needs your Apple Developer account)
 

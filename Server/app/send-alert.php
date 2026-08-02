@@ -72,41 +72,7 @@ function yta_save_alert(string $title, string $message, string $severity, ?strin
     return [true, null];
 }
 
-/** Sends the matching push via OneSignal's REST API. */
-function yta_send_push(array $config, string $title, string $message): array
-{
-    $payload = [
-        'app_id' => $config['appId'],
-        'target_channel' => 'push',
-        'included_segments' => ['Subscribed Users'],
-        'headings' => ['en' => $title],
-        'contents' => ['en' => $message],
-    ];
-
-    $ch = curl_init('https://api.onesignal.com/notifications');
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST => true,
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json',
-            'Authorization: Key ' . $config['restApiKey'],
-        ],
-        CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_TIMEOUT => 15,
-    ]);
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curlError = curl_error($ch);
-    curl_close($ch);
-
-    if ($response === false) {
-        return [false, 'Push failed to send: ' . $curlError];
-    }
-    if ($httpCode < 200 || $httpCode >= 300) {
-        return [false, 'OneSignal rejected the push (HTTP ' . $httpCode . '): ' . $response];
-    }
-    return [true, null];
-}
+require __DIR__ . '/push-helper.php';
 
 $result = null;
 if (isset($_POST['title'], $_POST['message'])) {

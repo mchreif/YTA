@@ -275,3 +275,25 @@ hr.divider {
   margin-bottom: 10px;
 }
 .option-row input { flex: 1; }
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid #E5E7EB;
+  background: #F9FAFB;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  color: #374151;
+  margin: 0;
+}
+.checkbox-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #16A34A;
+  cursor: pointer;
+  flex-shrink: 0;
+}

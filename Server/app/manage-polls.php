@@ -36,6 +36,8 @@ if (!$authenticated) {
     exit;
 }
 
+require __DIR__ . '/push-helper.php';
+
 $pollsFile = __DIR__ . '/polls.json';
 $votesFile = __DIR__ . '/votes.json';
 
@@ -107,9 +109,16 @@ if (isset($_POST['action']) && $_POST['action'] === 'create') {
             'options' => $options,
         ]);
 
-        $result = yta_write_polls($pollsFile, $polls)
-            ? ['ok' => true, 'message' => 'Poll published.']
-            : ['ok' => false, 'error' => 'Could not write polls.json.'];
+        if (!yta_write_polls($pollsFile, $polls)) {
+            $result = ['ok' => false, 'error' => 'Could not write polls.json.'];
+        } else {
+            $message = 'Poll published.';
+            if (!empty($_POST['sendPush'])) {
+                [$pushOk, $pushError] = yta_send_push($config, 'New Poll', $question);
+                $message .= $pushOk ? ' Push sent.' : (' Push not sent: ' . $pushError);
+            }
+            $result = ['ok' => true, 'message' => $message];
+        }
     }
 }
 
@@ -213,6 +222,10 @@ foreach ($displayPolls as $pi => $poll) {
       <div class="option-row"><input type="text" name="options[]" maxlength="80" placeholder="Option 2"></div>
       <div class="option-row"><input type="text" name="options[]" maxlength="80" placeholder="Option 3 (optional)"></div>
       <div class="option-row"><input type="text" name="options[]" maxlength="80" placeholder="Option 4 (optional)"></div>
+    </div>
+
+    <div class="field">
+      <label class="checkbox-row"><input type="checkbox" name="sendPush" value="1"> Also send a push notification to everyone</label>
     </div>
 
     <button type="submit">Publish Poll</button>

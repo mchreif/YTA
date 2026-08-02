@@ -33,6 +33,8 @@ if (!$authenticated) {
     exit;
 }
 
+require __DIR__ . '/push-helper.php';
+
 $newsFile = __DIR__ . '/news.json';
 
 function yta_read_news(string $newsFile): array
@@ -80,9 +82,16 @@ if (isset($_POST['action']) && $_POST['action'] === 'create') {
             'imageURL' => $imageURL,
             'url' => $url,
         ]);
-        $result = yta_write_news($newsFile, $news)
-            ? ['ok' => true, 'message' => 'Article published.']
-            : ['ok' => false, 'error' => 'Could not write news.json.'];
+        if (!yta_write_news($newsFile, $news)) {
+            $result = ['ok' => false, 'error' => 'Could not write news.json.'];
+        } else {
+            $message = 'Article published.';
+            if (!empty($_POST['sendPush'])) {
+                [$pushOk, $pushError] = yta_send_push($config, $title, $summary);
+                $message .= $pushOk ? ' Push sent.' : (' Push not sent: ' . $pushError);
+            }
+            $result = ['ok' => true, 'message' => $message];
+        }
     }
 }
 
@@ -156,6 +165,10 @@ $displayNews = yta_read_news($newsFile);
       <label for="imageURL">Photo URL (optional)</label>
       <input type="url" id="imageURL" name="imageURL" placeholder="https://ytalebanon.org/assets/images/news/your-photo.png">
       <p class="helper-text">Link to a photo already uploaded on your site. Leave blank for a clean text-only card.</p>
+    </div>
+
+    <div class="field">
+      <label class="checkbox-row"><input type="checkbox" name="sendPush" value="1"> Also send a push notification to everyone</label>
     </div>
 
     <button type="submit">Publish Article</button>

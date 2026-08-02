@@ -35,6 +35,8 @@ if (!$authenticated) {
     exit;
 }
 
+require __DIR__ . '/push-helper.php';
+
 $eventsFile = __DIR__ . '/events.json';
 
 function yta_write_events(string $eventsFile, array $events): bool
@@ -78,9 +80,16 @@ if (isset($_POST['action']) && $_POST['action'] === 'activate') {
             'date' => $dateValue,
             'linkURL' => $linkURL,
         ]];
-        $result = yta_write_events($eventsFile, $events)
-            ? ['ok' => true, 'message' => 'Upcoming Event button turned on.']
-            : ['ok' => false, 'error' => 'Could not write events.json.'];
+        if (!yta_write_events($eventsFile, $events)) {
+            $result = ['ok' => false, 'error' => 'Could not write events.json.'];
+        } else {
+            $message = 'Upcoming Event button turned on.';
+            if (!empty($_POST['sendPush'])) {
+                [$pushOk, $pushError] = yta_send_push($config, 'Upcoming Event', $title);
+                $message .= $pushOk ? ' Push sent.' : (' Push not sent: ' . $pushError);
+            }
+            $result = ['ok' => true, 'message' => $message];
+        }
     }
 }
 
@@ -168,6 +177,10 @@ foreach ($events as $event) {
         <label for="linkURL">Link URL (optional)</label>
         <input type="url" id="linkURL" name="linkURL" placeholder="https://…">
         <p class="helper-text">Where the button takes people. Leave blank and it plays the bundled promo video instead.</p>
+      </div>
+
+      <div class="field">
+        <label class="checkbox-row"><input type="checkbox" name="sendPush" value="1"> Also send a push notification to everyone</label>
       </div>
 
       <button type="submit">Turn On</button>
