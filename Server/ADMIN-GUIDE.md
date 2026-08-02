@@ -18,7 +18,7 @@ That's it. The app checks these files on every launch, on pull-to-refresh, and p
 
 ## Sending an alert — `send-alert.php` (recommended)
 
-Visit `https://ytalebanon.org/app/send-alert.php`, sign in, and fill in a title, message, severity (info/event/urgent), and an optional link. Publishing does two things at once: it adds the entry to `alerts.json` **and** sends an instant push notification to every subscribed device via OneSignal — one form, both steps, always in sync.
+Visit `https://ytalebanon.org/app/send-alert.php`, sign in, and fill in a title, message, severity (info/event/urgent), and an optional link. Publishing does two things at once: it adds the entry to `alerts.json` **and** sends an instant push notification to every subscribed device via OneSignal — one form, both steps, always in sync. The page also lists every existing alert underneath, with a **Delete** button.
 
 One-time setup: copy `config.local.example.php` to `config.local.php` in the same `app/` folder and fill in your OneSignal **App ID**, **REST API Key** (Settings → Keys & IDs in the OneSignal dashboard), and an admin password of your choosing. This file is gitignored and must never be committed or shared — it holds real secrets.
 

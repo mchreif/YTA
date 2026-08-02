@@ -38,10 +38,33 @@ if (!$authenticated) {
     exit;
 }
 
-/** Prepends the entry to alerts.json (lock for safe concurrent writes). */
-function yta_save_alert(string $title, string $message, string $severity, ?string $linkURL): array
+$alertsFile = __DIR__ . '/alerts.json';
+
+function yta_read_alerts(string $alertsFile): array
 {
-    $alertsFile = __DIR__ . '/alerts.json';
+    $alerts = json_decode(@file_get_contents($alertsFile), true);
+    return is_array($alerts) ? $alerts : [];
+}
+
+function yta_write_alerts(string $alertsFile, array $alerts): bool
+{
+    $handle = fopen($alertsFile, 'c+');
+    if ($handle === false) {
+        return false;
+    }
+    flock($handle, LOCK_EX);
+    ftruncate($handle, 0);
+    rewind($handle);
+    fwrite($handle, json_encode($alerts, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+    fflush($handle);
+    flock($handle, LOCK_UN);
+    fclose($handle);
+    return true;
+}
+
+/** Prepends a new entry to alerts.json. */
+function yta_save_alert(string $alertsFile, string $title, string $message, string $severity, ?string $linkURL): array
+{
     $entry = [
         'id' => 'alert-' . gmdate('Ymd-His') . '-' . bin2hex(random_bytes(3)),
         'title' => $title,
@@ -50,32 +73,16 @@ function yta_save_alert(string $title, string $message, string $severity, ?strin
         'date' => gmdate('Y-m-d\TH:i:s\Z'),
         'linkURL' => $linkURL,
     ];
-
-    $handle = fopen($alertsFile, 'c+');
-    if ($handle === false) {
-        return [false, 'Could not open alerts.json for writing.'];
-    }
-    flock($handle, LOCK_EX);
-    $raw = stream_get_contents($handle);
-    $alerts = json_decode($raw, true);
-    if (!is_array($alerts)) {
-        $alerts = [];
-    }
+    $alerts = yta_read_alerts($alertsFile);
     array_unshift($alerts, $entry);
-    ftruncate($handle, 0);
-    rewind($handle);
-    fwrite($handle, json_encode($alerts, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-    fflush($handle);
-    flock($handle, LOCK_UN);
-    fclose($handle);
-
-    return [true, null];
+    return yta_write_alerts($alertsFile, $alerts) ? [true, null] : [false, 'Could not write alerts.json.'];
 }
 
 require __DIR__ . '/push-helper.php';
 
 $result = null;
-if (isset($_POST['title'], $_POST['message'])) {
+
+if (isset($_POST['action']) && $_POST['action'] === 'create') {
     $title = trim((string) $_POST['title']);
     $message = trim((string) $_POST['message']);
     $severity = in_array($_POST['severity'] ?? '', ['info', 'event', 'urgent'], true) ? $_POST['severity'] : 'info';
@@ -85,7 +92,7 @@ if (isset($_POST['title'], $_POST['message'])) {
     if ($title === '' || $message === '') {
         $result = ['ok' => false, 'error' => 'Title and message are both required.'];
     } else {
-        [$alertOk, $alertError] = yta_save_alert($title, $message, $severity, $linkURL);
+        [$alertOk, $alertError] = yta_save_alert($alertsFile, $title, $message, $severity, $linkURL);
         if (!$alertOk) {
             $result = ['ok' => false, 'error' => $alertError];
         } else {
@@ -96,6 +103,23 @@ if (isset($_POST['title'], $_POST['message'])) {
         }
     }
 }
+
+if (isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['alertId'])) {
+    $alertId = (string) $_POST['alertId'];
+    $alerts = yta_read_alerts($alertsFile);
+    $before = count($alerts);
+    $alerts = array_values(array_filter($alerts, fn($a) => $a['id'] !== $alertId));
+
+    if (count($alerts) === $before) {
+        $result = ['ok' => false, 'error' => 'Alert not found (already deleted?).'];
+    } else {
+        $result = yta_write_alerts($alertsFile, $alerts)
+            ? ['ok' => true, 'message' => 'Alert deleted.']
+            : ['ok' => false, 'error' => 'Could not write alerts.json.'];
+    }
+}
+
+$displayAlerts = yta_read_alerts($alertsFile);
 ?>
 <!doctype html>
 <html lang="en">
@@ -122,13 +146,15 @@ if (isset($_POST['title'], $_POST['message'])) {
 
   <?php if ($result): ?>
     <?php if ($result['ok']): ?>
-      <div class="banner banner-success">✅ Alert published and push sent.</div>
+      <div class="banner banner-success">✅ <?php echo htmlspecialchars($result['message'] ?? 'Alert published and push sent.'); ?></div>
     <?php else: ?>
       <div class="banner banner-error">⚠️ <?php echo htmlspecialchars($result['error']); ?></div>
     <?php endif; ?>
   <?php endif; ?>
 
   <form method="post">
+    <input type="hidden" name="action" value="create">
+
     <div class="field">
       <label for="title">Title</label>
       <input type="text" id="title" name="title" required maxlength="120" placeholder="e.g. Road closed for festival weekend">
@@ -160,6 +186,33 @@ if (isset($_POST['title'], $_POST['message'])) {
 
     <button type="submit">Publish &amp; Send Push</button>
   </form>
+
+  <hr class="divider">
+
+  <h2 style="font-family:'Fraunces',serif;font-style:italic;font-size:18px;margin:0 0 16px;">Current alerts (<?php echo count($displayAlerts); ?>)</h2>
+
+  <?php if (empty($displayAlerts)): ?>
+    <p class="helper-text">No alerts yet.</p>
+  <?php else: ?>
+    <div class="results-list">
+      <?php foreach ($displayAlerts as $alert): ?>
+        <?php $severityColor = ['info' => '#16A34A', 'event' => '#C8951B', 'urgent' => '#DC2626'][$alert['severity']] ?? '#6B7280'; ?>
+        <div class="result-item">
+          <p class="result-question"><?php echo htmlspecialchars($alert['title']); ?></p>
+          <p class="result-meta">
+            <span style="color: <?php echo $severityColor; ?>; font-weight: 700;"><?php echo strtoupper(htmlspecialchars($alert['severity'])); ?></span>
+            · <?php echo htmlspecialchars($alert['date']); ?>
+          </p>
+          <p class="result-meta" style="color:#374151;"><?php echo htmlspecialchars($alert['message']); ?></p>
+          <form method="post" onsubmit="return confirm('Delete this alert? This cannot be undone.');" style="margin-top: 10px;">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="alertId" value="<?php echo htmlspecialchars($alert['id']); ?>">
+            <button type="submit" class="btn-secondary" style="width: auto; padding: 8px 16px; font-size: 12px;">Delete</button>
+          </form>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
 </div>
 </body>
 </html>
