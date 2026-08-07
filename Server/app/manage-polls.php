@@ -10,8 +10,6 @@
  * Shares config.local.php and the login session with send-alert.php —
  * see that file's header comment for one-time setup.
  */
-session_start();
-
 $config = @include __DIR__ . '/config.local.php';
 if (!is_array($config) || empty($config['adminPassword'])) {
     http_response_code(500);
@@ -19,22 +17,8 @@ if (!is_array($config) || empty($config['adminPassword'])) {
     exit;
 }
 
-$authenticated = !empty($_SESSION['yta_admin_authed']);
-$loginError = null;
-
-if (!$authenticated && isset($_POST['password'])) {
-    if (hash_equals($config['adminPassword'], (string) $_POST['password'])) {
-        $_SESSION['yta_admin_authed'] = true;
-        $authenticated = true;
-    } else {
-        $loginError = 'Incorrect password.';
-    }
-}
-
-if (!$authenticated) {
-    include __DIR__ . '/admin-login.php';
-    exit;
-}
+require __DIR__ . '/auth-helper.php';
+yta_require_admin_auth($config['adminPassword']);
 
 require __DIR__ . '/push-helper.php';
 

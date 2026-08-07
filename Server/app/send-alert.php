@@ -12,8 +12,6 @@
  * and a password of your choosing. config.local.php is gitignored —
  * it holds real secrets and must never be committed or shared.
  */
-session_start();
-
 $config = @include __DIR__ . '/config.local.php';
 if (!is_array($config) || empty($config['restApiKey']) || empty($config['adminPassword']) || empty($config['appId'])) {
     http_response_code(500);
@@ -21,22 +19,8 @@ if (!is_array($config) || empty($config['restApiKey']) || empty($config['adminPa
     exit;
 }
 
-$authenticated = !empty($_SESSION['yta_admin_authed']);
-$loginError = null;
-
-if (!$authenticated && isset($_POST['password'])) {
-    if (hash_equals($config['adminPassword'], (string) $_POST['password'])) {
-        $_SESSION['yta_admin_authed'] = true;
-        $authenticated = true;
-    } else {
-        $loginError = 'Incorrect password.';
-    }
-}
-
-if (!$authenticated) {
-    include __DIR__ . '/admin-login.php';
-    exit;
-}
+require __DIR__ . '/auth-helper.php';
+yta_require_admin_auth($config['adminPassword']);
 
 $alertsFile = __DIR__ . '/alerts.json';
 

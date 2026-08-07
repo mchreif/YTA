@@ -1,0 +1,3 @@
+# Belt-and-suspenders alongside index.php: don't list this folder's
+# contents even if index.php is ever missing or renamed.
+Options -Indexes

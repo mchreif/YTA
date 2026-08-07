@@ -1,35 +1,95 @@
 # Release manifest — "Cinema of the Valley" redesign
 
-## Wave 1.11 — branded admin tools for alerts & polls
+## Wave 1.14 — fix flaky admin login; block directory listing on /app/
 
 **Added**
 
 | File | Change |
 |---|---|
-| `Server/app/admin-style.css` | Shared branded look for the admin tools — green/gold/navy tokens matching the app, Outfit + Fraunces via Google Fonts, mobile-responsive (fluid card width, 44px+ touch targets) |
-| `Server/app/admin-login.php` | Shared password gate, included by both tools below |
-| `Server/app/manage-polls.php` | New: create a poll from a form (question, details, optional close date, 2–4 options) instead of hand-editing `polls.json`. Also shows a live results dashboard (percentage bars, vote counts, open/closed status) and a Delete action that cleans up `votes.json` too |
-| `Server/app/config.local.example.php` | Template for the secrets `send-alert.php`/`manage-polls.php` need (OneSignal App ID, REST API Key, admin password) — copy to `config.local.php` on the server and fill in; that file is gitignored and must never be committed |
+| `Server/app/auth-helper.php` | Extracted the session/password-check block (previously duplicated in all four admin tools) into a shared `yta_require_admin_auth()`. Sends explicit no-cache headers, and calls `session_regenerate_id(true)` immediately after a successful login |
+| `Server/app/index.php` | Returns HTTP 403 with no content — visiting `https://ytalebanon.org/app/` bare no longer shows Apache's raw directory listing |
+| `Server/app/.htaccess` | `Options -Indexes`, as a second layer in case `index.php` is ever missing |
 
 **Changed**
 
 | File | Change |
 |---|---|
-| `Server/app/send-alert.php` | Restyled with the shared branded look (was plain unstyled HTML); severity picker is now a set of colored pills instead of a `<select>` |
-| `Server/ADMIN-GUIDE.md` | Documents both tools as the recommended path, keeping the manual JSON-editing instructions as a fallback |
-| `.gitignore` | Excludes `Server/app/config.local.php` |
+| `Server/app/send-alert.php`, `manage-polls.php`, `manage-news.php`, `manage-event.php` | Now call `yta_require_admin_auth()` instead of each having their own copy of the session/password-check logic |
 
-**Why:** editing JSON by hand and separately using OneSignal's dashboard were both workable but easy to get wrong (a typo breaks the feed silently, or the two channels end up out of sync). These tools remove the JSON-syntax risk entirely and, for alerts, do both actions atomically so they can never drift apart.
+**Why:** the admin login was intermittently rejecting the correct password with no error message, then working once a different admin tool was logged into first. Root cause: Bluehost runs an edge cache in front of Apache that caches `GET` responses (confirmed earlier via response headers in this project) but never `POST`. A first-time visitor's login-page load could be served a cached response, including whatever session cookie was baked into it at cache-time — shared across every visitor who hit that same cached copy, so a login could appear to succeed once and then get silently invalidated. `session_regenerate_id(true)` issues a guaranteed-fresh, private session ID on every successful login (served fresh, since POST is never cached), which resolves this regardless of the cache's exact behavior — and is standard security best practice on its own regardless of the caching angle.
 
-**Verified:** all three PHP files pass `php -l`; the full create → view results → delete flow was exercised end-to-end in an isolated local environment with fake data (never touching the live site or sending a real push), including confirming the written JSON exactly matches the schema the apps expect. Also confirmed mobile-responsive layout and computed brand colors/fonts via a real browser render.
+**Verified:** confirmed via cookie tracking against an isolated test server that the session ID changes between the pre-login request and the post-login response, that the authenticated page renders immediately (not another login bounce), and that the new session is correctly recognized across a *different* admin tool without re-authenticating. Confirmed `/app/` now returns HTTP 403 with no listing. `php -l` passes clean on all six touched/added files.
 
-## Wave 1.10 — set the real OneSignal App ID
+## Wave 1.13 — delete alerts from send-alert.php
+
+**Changed**
 
 | File | Change |
 |---|---|
-| `YTA/Services/OneSignalConfig.swift` | `appID` set to the association's real OneSignal App ID (was a placeholder since Wave 1.9). Push notifications are now functional pending the APNs auth key upload documented in `Server/ADMIN-GUIDE.md` |
+| `Server/app/send-alert.php` | Added a "Current alerts" list underneath the publish form, each with a **Delete** button — matching the pattern already on `manage-polls.php`/`manage-news.php`. Refactored the inline alert-saving logic into shared `yta_read_alerts()`/`yta_write_alerts()` helpers so create and delete share the same read/write path. The create form's POST now carries an explicit `action=create` field (previously inferred from the presence of `title`/`message`), matching the `action`-based dispatch already used by the other three tools |
+| `Server/ADMIN-GUIDE.md` | Notes that `send-alert.php` now lists and can delete existing alerts |
 
-**Why:** the same App ID is now shared with the new React Native rebuild (`YTA-ReactNative/`) as well, so a single OneSignal dashboard reaches users of either app with one push.
+**Why:** `send-alert.php` was the only one of the four admin tools with no way to remove a published entry — deleting an alert required manually editing `alerts.json` via Bluehost's File Manager, unlike Polls/News which already had a Delete button.
+
+**Verified:** tested the full create → list → delete cycle against an isolated PHP server — confirmed the new alert appears in the listing immediately after publishing, deleting it removes exactly that entry from `alerts.json`, and `php -l` passes clean.
+
+## Wave 1.12 — fix: pushes were silently reaching nobody
+
+**Changed**
+
+| File | Change |
+|---|---|
+| `Server/app/push-helper.php` | Fixed `included_segments` from `'Subscribed Users'` (a segment name that doesn't exist on this OneSignal app) to `'Total Subscriptions'`; added response-body validation so an HTTP 200 that actually contains OneSignal's `{"id":"","errors":[...]}` "sent to nobody" shape is now correctly reported as a failure instead of a false "Push sent" |
+
+**Why:** every push sent through any of the four admin tools was reporting success (`Push sent.`) while OneSignal silently delivered it to zero devices. Root-caused via OneSignal's read-only Notifications/Segments APIs: this app was created under OneSignal's newer "Subscriptions" model, whose default everyone-segment is named `Total Subscriptions` — the older `Subscribed Users` name (used in OneSignal's own REST API examples, and copied into `push-helper.php` originally) doesn't exist here, so OneSignal's API returned HTTP 200 with an empty `id` and `"errors":["All included players are not subscribed"]` every single time, which the code wasn't checking for.
+
+**Verified:** confirmed live against the real OneSignal app (with the user's explicit go-ahead, since this fired real test pushes) — the old segment name reproduced the exact silent-failure response, the corrected segment name returned a valid message `id` and the notification was confirmed received on a real device, and the new response-validation logic was unit-tested against both captured response bodies.
+
+## Wave 1.11 — optional push notifications for Polls, News, and Event
+
+**Added**
+
+| File | Change |
+|---|---|
+| `Server/app/push-helper.php` | Extracted `yta_send_push()` (OneSignal REST API call) out of `send-alert.php` into a shared helper, so it can be reused by the other three admin tools without duplicating the cURL/error-handling logic |
+
+**Changed**
+
+| File | Change |
+|---|---|
+| `Server/app/send-alert.php` | Now `require`s `push-helper.php` instead of defining its own copy of `yta_send_push()` — no behavior change |
+| `Server/app/manage-polls.php` | Added an optional "Also send a push notification to everyone" checkbox (unchecked by default) to the create-poll form; when ticked, sends a push (heading "New Poll", body = the poll question) after the poll saves successfully |
+| `Server/app/manage-news.php` | Same optional checkbox on the publish-article form; push heading/body use the article's own title/summary |
+| `Server/app/manage-event.php` | Same optional checkbox, offered only on the "Turn On" form (never on "Turn Off" — nobody wants a push announcing an event ended) |
+| `Server/app/admin-style.css` | Added `.checkbox-row` styling (green accent-color checkbox in a bordered pill row) shared by the three new checkboxes |
+| `Server/ADMIN-GUIDE.md` | Documents the new checkbox in each of the Polls/News/Event sections, and reworded the "Push notifications" section to reflect that all four tools now share the same OneSignal channel |
+
+**Why:** previously only `send-alert.php` could send a push — publishing a poll, article, or event promotion never notified anyone beyond the in-app feed, even though those are sometimes just as time-sensitive as an alert. Made it opt-in and off-by-default rather than automatic, since auto-pushing on every routine publish risks notification fatigue; staff decide per item whether it's worth an interruption.
+
+**Verified:** tested all three checkboxes end-to-end against an isolated PHP server with fake data — confirmed (a) the checked path attempts a push and reports success/failure without ever blocking the underlying save, (b) the unchecked (default) path never attempts a push at all, and (c) `php -l` passes clean on all five touched/added files.
+
+## Wave 1.10 — branded admin tool suite (Alerts, Polls, News, Event)
+
+**Added**
+
+| File | Change |
+|---|---|
+| `Server/app/admin-style.css` | Shared branded stylesheet for all four admin tools — brand green/gold/navy tokens, Outfit + Fraunces fonts, mobile-responsive, custom pill-styled radio buttons, results/vote-bar styles |
+| `Server/app/admin-nav.php` | Shared top navigation bar (Alerts · Polls · News · Event) included by all four tools, with active-page highlighting |
+| `Server/app/manage-polls.php` | Create a poll (question, details, closing date, 2–4 options) from a form; live results dashboard with percentage bars underneath; Delete also cleans up `votes.json` |
+| `Server/app/manage-news.php` | Publish a Press article (Arabic title/summary typed right-to-left, article link, optional photo URL) from a form; lists existing articles with Delete |
+| `Server/app/manage-event.php` | Toggle-style control for the Home screen's "Upcoming Event" button (Turn On with title/end-date/link, or Turn Off) — matches the app's actual "first non-expired entry" runtime behavior instead of presenting a generic list editor |
+
+**Changed**
+
+| File | Change |
+|---|---|
+| `Server/app/send-alert.php` | Restyled to match the new shared design system; now includes the shared top nav instead of a single cross-link |
+| `Server/ADMIN-GUIDE.md` | Rewritten so all four admin tools (not just polls) are documented as the recommended path, each with a "doing it by hand instead" fallback; push-notification section clarified now that `send-alert.php` sends the push automatically |
+
+**Why:** alerts, polls, news, and the event promotion were four different workflows with inconsistent editing paths (some via forms, some via hand-edited JSON only). One consistent branded suite, sharing a single login and navigation bar, means non-technical YTA staff can manage all live app content from a browser without ever touching a JSON file or risking a syntax error that breaks the feed.
+
+**Note:** `polls.json`/`votes.json`/`polls.php`/`vote.php` remain the live endpoints the app itself calls — `manage-polls.php` reads/writes the same files but is only ever visited by a human, never called by the app.
 
 ## Wave 1.9 — instant push notifications (OneSignal)
 
